@@ -1,0 +1,35 @@
+﻿# Node
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Env
+.env
+.env.*
+
+# Runtime/data backups
+data/
+uploads/
+backend/uploads/
+
+# Build/cache
+node_modules
+dist/
+build/
+.vite/
+.vercel/
+
+# OS/Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Unrelated local copies
+VleraHomeWebsite/
+design-previews/
+/assets/
+BACKUP-MANUAL/
+vlera-frontend/vlerafrontend/
