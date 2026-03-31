@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: vlera-backend
+    env: node
+    rootDir: backend
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_PATH
+        value: /var/data/vlera.sqlite
+      - key: UPLOADS_PATH
+        value: /var/data/uploads
+      - key: FRONTEND_ORIGIN
+        value: "*"
+    disk:
+      name: vlera-data
+      mountPath: /var/data
+      sizeGB: 1

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 40" role="img" aria-label="Flamuri i Serbise">
+  <rect width="60" height="13.333" y="0" fill="#c6363c"/>
+  <rect width="60" height="13.333" y="13.333" fill="#0c4076"/>
+  <rect width="60" height="13.334" y="26.666" fill="#fff"/>
+  <g transform="translate(9 9)">
+    <rect width="10" height="14" rx="1.2" fill="#fff"/>
+    <rect x="1.2" y="1.2" width="7.6" height="11.6" rx="1" fill="#c6363c"/>
+    <rect x="4.2" y="1.2" width="1.6" height="11.6" fill="#fff"/>
+    <rect x="1.2" y="6.2" width="7.6" height="1.6" fill="#fff"/>
+    <path d="M5 0l1.6 1.8H3.4z" fill="#f5c542"/>
+  </g>
+</svg>

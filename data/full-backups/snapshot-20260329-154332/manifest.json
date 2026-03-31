@@ -1,0 +1,12 @@
+{
+  "created_at": "2026-03-29T13:43:32.389Z",
+  "backup_dir": "C:\\Users\\ThisPC\\Desktop\\VleraHome\\data\\full-backups\\snapshot-20260329-154332",
+  "includes": {
+    "database": "C:\\Users\\ThisPC\\Desktop\\VleraHome\\backend\\data\\vlera.sqlite",
+    "uploads": "C:\\Users\\ThisPC\\Desktop\\VleraHome\\backend\\uploads",
+    "code_paths": [
+      "C:\\Users\\ThisPC\\Desktop\\VleraHome\\backend",
+      "C:\\Users\\ThisPC\\Desktop\\VleraHome\\vlera-frontend"
+    ]
+  }
+}

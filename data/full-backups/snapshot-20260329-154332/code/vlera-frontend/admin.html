@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin | VLERA</title>
+  <link rel="stylesheet" href="./assets/css/style.css?v=20260329-89">
+</head>
+<body>
+  <section id="admin-auth-screen" class="admin-auth-screen">
+    <div class="admin-auth-card">
+      <h1>VLERA Admin</h1>
+      <p>Hyr me email dhe password per te menaxhuar website-in.</p>
+      <form id="admin-login-form" class="admin-auth-form">
+        <label>
+          Email
+          <input id="admin-login-email" type="email" autocomplete="username" value="qendrim.salihu.tr@gmail.com" required>
+        </label>
+        <label>
+          Password
+          <div class="admin-pass-wrap">
+            <input id="admin-login-password" type="password" autocomplete="current-password" value="qendraternoc1" required>
+            <button id="admin-password-toggle" type="button" class="admin-pass-toggle" aria-label="Shfaq password">
+              &#128065;</button>
+          </div>
+        </label>
+        <button id="admin-login-submit" class="btn btn-primary" type="submit">Hyr ne Admin</button>
+        <p id="admin-login-error" class="admin-auth-error" role="alert" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+  <div id="admin-shell" class="admin-shell admin-shell--locked">
+    <aside class="admin-side">
+      <h2>VLERA Admin</h2>
+      <a class="active" href="#dashboard" data-admin-nav="dashboard">Dashboard</a>
+      <a href="#slides" data-admin-nav="slides">Slider</a>
+      <a href="#categories" data-admin-nav="categories">Kategorite</a>
+      <a href="#products" data-admin-nav="products">Produktet</a>
+      <a href="#orders" data-admin-nav="orders">Porosite</a>
+      <a href="#customers" data-admin-nav="customers">Klientet</a>
+      <a href="#messages" data-admin-nav="messages">Mesazhet</a>
+      <a href="#whatsapp-messages" data-admin-nav="whatsapp-messages">WhatsApp Messages</a>
+      <a href="#settings" data-admin-nav="settings">Business Settings</a>
+      <a href="#actions" data-admin-nav="actions">Veprime</a>
+      <a href="index.html">Hap Website</a>
+      <a href="#" id="admin-logout-link">Dil</a>
+    </aside>
+    <main class="admin-main">
+      <section class="admin-page active" data-admin-page="dashboard" id="dashboard">
+        <div class="admin-top">
+          <strong>Paneli i Menaxhimit</strong>
+          <a class="btn btn-primary" href="shop.html">Shiko Shop</a>
+        </div>
+        <section class="kpi">
+          <article class="card"><div>Produkte</div><h3 id="kpi-products">0</h3></article>
+          <article class="card"><div>Kategori</div><h3 id="kpi-categories">0</h3></article>
+          <article class="card"><div>Porosi</div><h3 id="kpi-orders">0</h3></article>
+          <article class="card"><div>Ne pritje</div><h3 id="kpi-pending">0</h3></article>
+          <article class="card"><div>Kliente</div><h3 id="kpi-customers">0</h3></article>
+        </section>
+      </section>
+
+      <section class="admin-page" data-admin-page="slides" id="slides">
+        <section class="panel">
+          <h3 style="margin-top:0">Home Slider (shto sa foto te duash)</h3>
+          <form id="admin-slide-form">
+            <div class="filters">
+              <input name="caption" placeholder="Tekst i slides (opsionale)">
+              <label class="panel" style="display:block;cursor:pointer;padding:10px">
+                Ngarko foton e slide
+                <input name="image" type="file" accept="image/*" style="margin-top:8px" required>
+              </label>
+            </div>
+            <button class="btn btn-primary" type="submit">Shto Slide</button>
+          </form>
+        </section>
+
+        <section style="margin-top:14px" class="panel">
+          <h3 style="margin-top:0">Slides e shtuara</h3>
+          <table class="table">
+            <thead><tr><th>ID</th><th>Foto</th><th>Caption</th><th>Veprim</th></tr></thead>
+            <tbody id="admin-slides-body"></tbody>
+          </table>
+          <div class="load-more-wrap"><button id="slides-more-admin" class="btn load-more-btn hidden" type="button">Shfaq me shume</button></div>
+        </section>
+      </section>
+
+      <section class="admin-page" data-admin-page="categories" id="categories">
+        <section class="panel">
+          <h3 style="margin-top:0">Add Category (me foto)</h3>
+          <form id="admin-category-form">
+            <div class="filters">
+              <input name="name" placeholder="Emri i kategorise (p.sh. Seta darke)" required>
+              <input name="description" placeholder="Pershkrim i shkurter (opsionale)">
+              <label class="panel" style="display:block;cursor:pointer;padding:10px;grid-column:1/-1">
+                Ngarko foton e kategorise
+                <input name="image" type="file" accept="image/*" style="margin-top:8px">
+              </label>
+            </div>
+            <button class="btn btn-primary" type="submit">Ruaj Kategorine</button>
+          </form>
+        </section>
+
+        <section style="margin-top:14px" class="panel">
+          <h3 style="margin-top:0">Profili i kategorise (foto 1 per kategori)</h3>
+          <form id="admin-category-profile-form">
+            <div class="filters">
+              <select id="admin-category-profile-select" name="categoryId" required>
+                <option value="">Zgjedh kategorine</option>
+              </select>
+              <input name="description" placeholder="Pershkrim i kategorise (opsionale)">
+              <label class="panel" style="display:block;cursor:pointer;padding:10px;grid-column:1/-1">
+                Vendos / ndrysho foton e kategorise
+                <input name="image" type="file" accept="image/*" style="margin-top:8px">
+              </label>
+            </div>
+            <button class="btn btn-primary" type="submit">Ruaj profilin e kategorise</button>
+          </form>
+        </section>
+
+        <section style="margin-top:14px" class="panel">
+          <h3 style="margin-top:0">Kategorite e shtuara</h3>
+          <table class="table">
+            <thead><tr><th>ID</th><th>Foto</th><th>Emri</th><th>Pershkrim</th><th>Veprim</th></tr></thead>
+            <tbody id="admin-categories-body"></tbody>
+          </table>
+          <div class="load-more-wrap"><button id="categories-more-admin" class="btn load-more-btn hidden" type="button">Shfaq me shume</button></div>
+        </section>
+
+        <section style="margin-top:14px" class="panel">
+          <h3 style="margin-top:0">Zonat e dergeses (nga databaza)</h3>
+          <table class="table">
+            <thead><tr><th>ID</th><th>Zona</th><th>Posta</th></tr></thead>
+            <tbody id="admin-zones-body"></tbody>
+          </table>
+          <div class="load-more-wrap"><button id="zones-more-admin" class="btn load-more-btn hidden" type="button">Shfaq me shume</button></div>
+        </section>
+      </section>
+
+      <section class="admin-page" data-admin-page="products" id="products">
+        <section class="panel admin-product-panel">
+          <h3 style="margin-top:0">Add Product</h3>
+          <p class="admin-product-lead">Shto produkt me foto te qarte dhe cmim te sakte per publikim profesional.</p>
+          <form id="admin-product-form" class="admin-product-form">
+            <input type="hidden" name="productId" value="">
+            <div class="filters">
+              <input name="title" placeholder="Titulli i produktit" required>
+              <select id="admin-product-category" name="category" required>
+                <option value="">Zgjedh kategorine</option>
+              </select>
+              <input name="price" type="number" step="0.01" placeholder="Cmimi" required>
+              <input name="discountPrice" type="number" step="0.01" placeholder="Zbritja (opsionale)">
+              <input name="stockQty" type="number" min="0" step="1" placeholder="Stock qty" value="999" required>
+            </div>
+            <div class="admin-product-toggles">
+              <label><input name="isNewArrival" type="checkbox"> New Arrival</label>
+              <label><input name="isBestSeller" type="checkbox"> Best Seller</label>
+              <label><input name="isActive" type="checkbox" checked> Aktiv ne website</label>
+            </div>
+            <textarea name="description" placeholder="Pershkrimi (opsionale)"></textarea>
+            <div class="admin-upload-wrap">
+              <label class="admin-upload-box">Ngarko foton e produktit
+                <input name="image" type="file" accept="image/*">
+              </label>
+            </div>
+            <div class="admin-upload-wrap">
+              <label class="admin-upload-box">Galeri fotosh (opsionale, mundesh me shtu shume)
+                <input name="galleryImages" type="file" accept="image/*" multiple>
+              </label>
+            </div>
+            <div class="admin-actions-row">
+              <button class="btn btn-primary admin-product-submit" type="submit">Ruaj Produktin</button>
+              <button id="admin-product-cancel-edit" class="btn" type="button">Anulo Editimin</button>
+            </div>
+          </form>
+        </section>
+
+        <section style="margin-top:14px" class="panel">
+          <h3 style="margin-top:0">Produktet e shtuara</h3>
+          <table class="table">
+            <thead><tr><th>ID</th><th>Foto</th><th>Titulli</th><th>Kategoria</th><th>Cmimi</th><th>Stock</th><th>Tags</th><th>Veprim</th></tr></thead>
+            <tbody id="admin-products-body"></tbody>
+          </table>
+          <div class="admin-list-controls">
+            <span id="products-page-info" class="badge">Faqe 1 / 1</span>
+            <button id="products-more" class="btn load-more-btn hidden" type="button">Shfaq me shume</button>
+          </div>
+        </section>
+      </section>
+
+      <section class="admin-page" data-admin-page="orders" id="orders">
+        <section class="panel">
+          <h3 style="margin-top:0">Porosite e klienteve</h3>
+          <div class="filters" style="margin-bottom:10px">
+            <input id="admin-orders-search" placeholder="Kerko porosi (nr, klient, telefon)">
+            <select id="admin-orders-status">
+              <option value="">Te gjitha statuset</option>
+              <option value="Pending">Pending</option>
+              <option value="Confirmed">Confirmed</option>
+              <option value="Shipped">Shipped</option>
+              <option value="Delivered">Delivered</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+          </div>
+          <table class="table">
+            <thead><tr><th>Nr</th><th>Data</th><th>Klienti</th><th>Tel</th><th>Produktet</th><th>Fotot</th><th>Qyteti</th><th>Zona</th><th>Posta</th><th>Totali</th><th>Statusi</th></tr></thead>
+            <tbody id="admin-orders-body"></tbody>
+          </table>
+          <div class="admin-list-controls">
+            <span id="orders-page-info" class="badge">Faqe 1 / 1</span>
+            <button id="orders-more" class="btn load-more-btn hidden" type="button">Shfaq me shume</button>
+          </div>
+        </section>
+      </section>
+
+      <section class="admin-page" data-admin-page="customers" id="customers">
+        <section class="panel">
+          <h3 style="margin-top:0">Klientet</h3>
+          <table class="table">
+            <thead><tr><th>ID</th><th>Emri</th><th>Tel</th><th>Qyteti</th><th>Adresa</th><th>Porosi</th><th>Veprime</th></tr></thead>
+            <tbody id="admin-customers-body"></tbody>
+          </table>
+          <div class="load-more-wrap"><button id="customers-more-admin" class="btn load-more-btn hidden" type="button">Shfaq me shume</button></div>
+        </section>
+      </section>
+
+      <section class="admin-page" data-admin-page="messages" id="messages">
+        <section class="panel">
+          <h3 style="margin-top:0">Mesazhet nga Contact</h3>
+          <table class="table">
+            <thead><tr><th>ID</th><th>Emri</th><th>Tel</th><th>Email</th><th>Mesazhi</th><th>Data</th><th>Veprim</th></tr></thead>
+            <tbody id="admin-contacts-body"></tbody>
+          </table>
+          <div class="load-more-wrap"><button id="contacts-more-admin" class="btn load-more-btn hidden" type="button">Shfaq me shume</button></div>
+        </section>
+      </section>
+
+      <section class="admin-page" data-admin-page="whatsapp-messages" id="whatsapp-messages">
+        <section class="panel">
+          <h3 style="margin-top:0">WhatsApp Messages</h3>
+          <table class="table">
+            <thead><tr><th>ID</th><th>Emri</th><th>Tel</th><th>Mesazhi</th><th>Faqja</th><th>Data</th><th>Veprim</th></tr></thead>
+            <tbody id="admin-whatsapp-body"></tbody>
+          </table>
+          <div class="load-more-wrap"><button id="whatsapp-more-admin" class="btn load-more-btn hidden" type="button">Shfaq me shume</button></div>
+        </section>
+      </section>
+
+      <section class="admin-page" data-admin-page="settings" id="settings">
+        <section class="panel">
+          <h3 style="margin-top:0">Business Settings</h3>
+          <form id="admin-settings-form">
+            <div class="filters">
+              <input name="storeName" placeholder="Store name" required>
+              <input name="phone" placeholder="Telefoni" required>
+              <input name="email" placeholder="Email" required>
+              <input name="instagramUrl" placeholder="Instagram URL" required>
+              <input name="freeShippingThreshold" type="number" min="0" step="1" placeholder="Free shipping mbi" required>
+            </div>
+            <button class="btn btn-primary" type="submit">Ruaj Settings</button>
+          </form>
+        </section>
+      </section>
+
+      <section class="admin-page" data-admin-page="actions" id="actions">
+        <section class="panel">
+          <h3 style="margin-top:0">Pastrime te shpejta</h3>
+          <div class="admin-actions-row">
+            <button id="btn-clear-products" class="btn">Fshi te gjitha produktet</button>
+            <button id="btn-clear-orders" class="btn">Fshi te gjitha porosite</button>
+            <button id="btn-reset-storage" class="btn">Reset storage</button>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+  <script src="./assets/js/main.js?v=20260329-92"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

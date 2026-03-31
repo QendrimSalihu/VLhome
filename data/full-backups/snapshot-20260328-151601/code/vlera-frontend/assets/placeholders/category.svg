@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560">
+  <rect width="900" height="560" fill="#f5f0e6"/>
+  <rect x="30" y="30" width="840" height="500" rx="18" fill="#e8d5b0" opacity="0.45"/>
+  <text x="450" y="280" text-anchor="middle" fill="#1a3a32" font-size="36" font-family="Georgia, serif">Category Image</text>
+  <text x="450" y="325" text-anchor="middle" fill="#254d41" font-size="20" font-family="Arial, sans-serif">Ngarko nga Admin</text>
+</svg>

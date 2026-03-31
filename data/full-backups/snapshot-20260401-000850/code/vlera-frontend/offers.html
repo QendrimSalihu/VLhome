@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ofertat | VLERA</title>
+  <link rel="stylesheet" href="./assets/css/style.css?v=20260330-129">
+</head>
+<body>
+  <div class="topbar">Oferta dhe zbritje</div>
+  <header class="header">
+    <div class="container header-inner">
+      <a class="logo" href="index.html"><strong>VLERA</strong><span>Luxury Home</span></a>
+      <nav class="nav">
+        <a href="index.html">Home</a>
+        <a href="shop.html">Shop</a>
+        <a href="categories.html">Kategorite</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="track-order.html" id="i18n-nav-track">Statusi i Porosise</a>
+      </nav>
+      <div class="header-actions">
+        <form data-search-form><input name="q" placeholder="Kerko produkte..." style="width:160px;height:38px"></form>
+        <a class="icon-btn" href="wishlist.html" title="Wishlist">&#9825;</a>
+        <a class="cart-btn" href="cart.html" aria-label="Shporta">&#128722;<strong data-cart-count>0</strong></a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="page-head">
+      <h1>Ofertat</h1>
+      <p id="i18n-offers-lead" class="lead">Te gjitha produktet me zbritje aktive.</p>
+    </section>
+
+    <div id="offers-products" class="product-grid"></div>
+    <div class="load-more-wrap">
+      <button id="offers-products-more" class="btn load-more-btn hidden" type="button">Shfaq me shume</button>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-bottom">&copy; <span data-year></span> VLERA Luxury Home</div>
+  </footer>
+  <script src="./assets/js/main.js?v=20260330-113"></script>
+</body>
+</html>

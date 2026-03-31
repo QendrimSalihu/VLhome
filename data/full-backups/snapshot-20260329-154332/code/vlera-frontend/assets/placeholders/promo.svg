@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#1a3a32"/>
+  <rect x="36" y="36" width="728" height="528" rx="18" fill="#c9a96e" opacity="0.35"/>
+  <text x="400" y="290" text-anchor="middle" fill="#f5f0e6" font-size="34" font-family="Georgia, serif">Promo Image</text>
+  <text x="400" y="334" text-anchor="middle" fill="#e8d5b0" font-size="18" font-family="Arial, sans-serif">Ngarko nga Admin</text>
+</svg>

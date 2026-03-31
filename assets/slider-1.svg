@@ -1,0 +1,17 @@
+<svg width="1600" height="700" viewBox="0 0 1600 700" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="VLERA Slider 1">
+  <defs>
+    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0c4f4f"/>
+      <stop offset="100%" stop-color="#1c6a68"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="700" fill="url(#g1)"/>
+  <circle cx="250" cy="120" r="220" fill="#ffffff" fill-opacity="0.08"/>
+  <circle cx="1450" cy="620" r="260" fill="#ffffff" fill-opacity="0.07"/>
+  <text x="140" y="300" fill="#f4efe5" font-size="72" font-family="Georgia, 'Times New Roman', serif" letter-spacing="2">
+    VLERA Luxury Home
+  </text>
+  <text x="140" y="370" fill="#f4efe5" fill-opacity="0.9" font-size="36" font-family="Segoe UI, Arial, sans-serif">
+    Seta darke, gota dhe dekore premium
+  </text>
+</svg>

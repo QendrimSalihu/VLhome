@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+  <rect width="1400" height="900" fill="#1a3a32"/>
+  <rect x="60" y="60" width="1280" height="780" rx="20" fill="#254d41" opacity="0.45"/>
+  <text x="700" y="420" text-anchor="middle" fill="#e8d5b0" font-size="44" font-family="Georgia, serif">VLERA HOME</text>
+  <text x="700" y="470" text-anchor="middle" fill="#f5f0e6" font-size="24" font-family="Arial, sans-serif">Shto foton Hero nga Admin</text>
+</svg>
