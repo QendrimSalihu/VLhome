@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="sq">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VLERA Luxury Home</title>
+    <link rel="stylesheet" href="./assets/css/style.css?v=20260330-145" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="container header-inner">
+        <a class="logo" href="index.html"
+          ><strong>VLERA</strong><span>Luxury Home</span></a
+        >
+        <nav class="nav">
+          <a href="index.html">Home</a>
+          <a href="shop.html">Shop</a>
+          <a href="categories.html">Kategorite</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+          <a href="track-order.html" id="i18n-nav-track">Statusi i Porosise</a>
+        </nav>
+        <div class="header-actions">
+          <form data-search-form>
+            <input
+              name="q"
+              placeholder="Kerko produkte..."
+              style="width: 160px; height: 38px"
+            />
+          </form>
+          <a class="icon-btn" href="wishlist.html" title="Wishlist">&#9825;</a>
+          <a class="cart-btn" href="cart.html" aria-label="Shporta"
+            >&#128722;<strong data-cart-count>0</strong></a
+          >
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <h1 id="i18n-hero-title">Elegance per cdo tryeze</h1>
+            <p id="i18n-hero-desc">
+              Zbulo koleksionin tone premium per kuzhine dhe dekor, me produkte
+              elegante per cdo shtepi moderne.
+            </p>
+            <div class="hero-cta">
+              <a
+                class="btn btn-primary"
+                id="i18n-hero-btn-products"
+                href="shop.html"
+                >Shiko Produktet</a
+              >
+              <a
+                class="btn btn-primary"
+                id="i18n-hero-btn-offers"
+                href="offers.html"
+                >Shiko Ofertat</a
+              >
+              <a
+                class="btn btn-primary"
+                id="i18n-hero-btn-categories"
+                href="categories.html"
+                >Shiko Kategorite</a
+              >
+            </div>
+          </div>
+          <div class="hero-slider" id="hero-slider">
+            <div id="hero-slider-track" class="hero-track"></div>
+            <div id="hero-slider-dots" class="hero-dots"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <h2 id="i18n-home-categories-title">Kategorite Kryesore</h2>
+          <p class="lead" id="i18n-home-categories-lead">
+            Eksploro koleksionet tona te kuruara per nje shtepi me stil.
+          </p>
+          <div id="home-categories" class="category-grid"></div>
+          <div class="load-more-wrap">
+            <button
+              id="home-categories-more"
+              class="btn load-more-btn hidden"
+              type="button"
+            >
+              Shfaq me shume
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" style="padding-top: 8px">
+        <div class="container">
+          <div class="brand-box">
+            <div class="brand-box-bg"></div>
+            <div class="brand-box-content">
+              <h3 class="brand-box-title">VleraHome</h3>
+              <p class="brand-box-sub">Luxury Home</p>
+              <div class="brand-box-icons">
+                <div class="brand-circle">&#9749;</div>
+                <div class="brand-circle">&#127869;</div>
+              </div>
+              <p class="brand-box-location" id="i18n-brand-location">
+                &#128205; Skopje
+              </p>
+              <p class="brand-box-tagline" id="i18n-brand-tagline">
+                SUPPLY YOUR HOME WITH US!
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <h2 id="i18n-why-title">Pse te zgjedhni VLERA</h2>
+          <p class="lead" id="i18n-why-lead">
+            Eksperience premium ne cdo porosi, nga cilesia deri te dorezimi.
+          </p>
+          <div class="why-grid">
+            <article class="why-card">
+              <div class="why-icon">&#10024;</div>
+              <h3 id="i18n-why-1-title">Cilesi Premium</h3>
+              <p id="i18n-why-1-desc">
+                Produkte te perzgjedhura me standard te larte per shtepi
+                elegante.
+              </p>
+            </article>
+            <article class="why-card">
+              <div class="why-icon">&#128666;</div>
+              <h3 id="i18n-why-2-title">Dergese e Shpejte</h3>
+              <p id="i18n-why-2-desc">
+                Porosia juaj pergatitet me kujdes dhe dergohet ne kohe.
+              </p>
+            </article>
+            <article class="why-card">
+              <div class="why-icon">&#128182;</div>
+              <h3 id="i18n-why-3-title">Pagese ne Dorezim</h3>
+              <p id="i18n-why-3-desc">
+                Cash on Delivery / Payment on Post per blerje me te sigurt.
+              </p>
+            </article>
+            <article class="why-card">
+              <div class="why-icon">&#129309;</div>
+              <h3 id="i18n-why-4-title">Sherbim i Besueshem</h3>
+              <p id="i18n-why-4-desc">
+                Komunikim i qarte dhe mbeshtetje reale per cdo klient.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-soft">
+        <div class="container">
+          <h2 id="i18n-best-title">Best Sellers</h2>
+          <p class="lead" id="i18n-best-lead">
+            Produktet me te preferuara nga klientet tane.
+          </p>
+          <div id="home-bestsellers" class="product-grid"></div>
+          <div class="load-more-wrap">
+            <button
+              id="home-bestsellers-more"
+              class="btn load-more-btn hidden"
+              type="button"
+            >
+              Shfaq me shume
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <h2 id="i18n-home-products-title">Produktet</h2>
+          <p class="lead" id="i18n-home-products-lead">
+            Zgjidh produktet tona premium per kuzhine dhe dekor.
+          </p>
+          <div id="home-products" class="product-grid"></div>
+          <div class="load-more-wrap">
+            <button
+              id="home-products-more"
+              class="btn load-more-btn hidden"
+              type="button"
+            >
+              Shfaq me shume
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <h2 id="i18n-new-title">New Arrivals</h2>
+          <p class="lead" id="i18n-new-lead">
+            Artikujt me te rinj ne koleksionin VLERA.
+          </p>
+          <div id="home-newarrivals" class="product-grid"></div>
+          <div class="load-more-wrap">
+            <button
+              id="home-newarrivals-more"
+              class="btn load-more-btn hidden"
+              type="button"
+            >
+              Shfaq me shume
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="shipping-box">
+            <h2 id="i18n-shipping-title" style="margin-bottom: 8px">
+              Tarifat e Dergeses
+            </h2>
+            <p class="lead" id="i18n-shipping-lead" style="margin-bottom: 18px">
+              Porosite dergohen me kujdes ne rajon, me cmime te qarta dhe
+              transparente.
+            </p>
+            <div class="shipping-grid">
+              <article class="shipping-card">
+                <img
+                  class="shipping-flag-img"
+                  src="./assets/flags/mk.svg"
+                  alt="Flamuri i Maqedonise"
+                  loading="lazy"
+                  decoding="async"
+                  width="54"
+                  height="36"
+                />
+                <div class="shipping-info">
+                  <h3 id="i18n-ship-country-1">Maqedoni</h3>
+                  <p id="i18n-ship-label-1">Dergesa: 2-4 dite</p>
+                </div>
+                <strong>150 denar</strong>
+              </article>
+              <article class="shipping-card">
+                <img
+                  class="shipping-flag-img"
+                  src="./assets/flags/xk.svg"
+                  alt="Flamuri i Kosoves"
+                  loading="lazy"
+                  decoding="async"
+                  width="54"
+                  height="36"
+                />
+                <div class="shipping-info">
+                  <h3 id="i18n-ship-country-2">Kosove</h3>
+                  <p id="i18n-ship-label-2">Dergesa: 5-8 dite</p>
+                </div>
+                <strong>6 �</strong>
+              </article>
+              <article class="shipping-card">
+                <img
+                  class="shipping-flag-img"
+                  src="./assets/flags/al.svg"
+                  alt="Flamuri i Shqiperise"
+                  loading="lazy"
+                  decoding="async"
+                  width="54"
+                  height="36"
+                />
+                <div class="shipping-info">
+                  <h3 id="i18n-ship-country-3">Shqiperi</h3>
+                  <p id="i18n-ship-label-3">Dergesa: 8-12 dite</p>
+                </div>
+                <strong>8 �</strong>
+              </article>
+              <article class="shipping-card">
+                <img
+                  class="shipping-flag-img"
+                  src="./assets/flags/rs.svg"
+                  alt="Flamuri i Serbise"
+                  loading="lazy"
+                  decoding="async"
+                  width="54"
+                  height="36"
+                />
+                <div class="shipping-info">
+                  <h3 id="i18n-ship-country-4">Bujanoc</h3>
+                  <p id="i18n-ship-label-4">Dergesa: 10-16 dite</p>
+                </div>
+                <strong>5 �</strong>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-soft">
+        <div class="container">
+          <div class="insta-box">
+            <h2 id="i18n-inst-title" style="margin-bottom: 8px">
+              Na ndiqni & Kontaktoni
+            </h2>
+            <p class="lead" id="i18n-inst-lead" style="margin-bottom: 16px">
+              @vlerahomee per produkte te reja, oferta dhe inspirim ditor.
+            </p>
+            <div class="social-pair-inline">
+              <a
+                class="insta-link-only"
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://www.instagram.com/vlerahomee?igsh=dDBudTY5dmwyM240"
+                aria-label="Instagram Vlera Home"
+              >
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2Zm8.58 2a1.17 1.17 0 1 0 0 2.33 1.17 1.17 0 0 0 0-2.33ZM12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6Z"
+                  />
+                </svg>
+              </a>
+              <a
+                class="wa-link-only"
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://wa.me/38975465888"
+                aria-label="WhatsApp Vlera Home"
+              >
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M19.1 4.9A9.8 9.8 0 0 0 3.6 16.5L2 22l5.7-1.5a9.8 9.8 0 0 0 4.6 1.2h.1A9.9 9.9 0 0 0 19.1 4.9Zm-6.7 15.2h-.1a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3.4.9.9-3.3-.2-.3a8.2 8.2 0 1 1 7.3 4Zm4.5-6.1c-.2-.1-1.2-.6-1.4-.7-.2-.1-.3-.1-.5.1-.1.2-.5.7-.6.8-.1.1-.2.1-.4 0a6.7 6.7 0 0 1-2-1.2 7.3 7.3 0 0 1-1.4-1.8c-.1-.2 0-.3.1-.4l.3-.3.2-.3a.4.4 0 0 0 0-.4c0-.1-.5-1.3-.7-1.8-.2-.5-.4-.4-.5-.4h-.4a.8.8 0 0 0-.6.3c-.2.2-.8.8-.8 1.9s.8 2.1 1 2.3c.1.1 1.5 2.4 3.7 3.3.5.2.9.4 1.2.5.5.2.9.2 1.2.1.4-.1 1.2-.5 1.3-1 .2-.5.2-.9.1-1-.1-.1-.2-.1-.4-.2Z"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="map-box">
+            <div class="map-box-head">
+              <h2 id="i18n-map-title">Na gjeni ne harte</h2>
+              <p id="i18n-map-address" class="lead">
+                Vlera Home, Kemal Sejfula Street nr:27, Skopje 1000, North
+                Macedonia
+              </p>
+              <a
+                id="i18n-map-btn"
+                class="btn btn-primary map-open-btn"
+                href="https://www.google.com/maps/search/?api=1&query=Vlera+Home%2C+Kemal+Sejfula+Street+nr%3A27%2C+Skopje+1000%2C+North+Macedonia"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Nis navigimin</a
+              >
+            </div>
+            <div class="map-frame-wrap">
+              <iframe
+                title="Vlera Home Location"
+                src="https://www.google.com/maps?q=Vlera+Home%2C+Kemal+Sejfula+Street+nr%3A27%2C+Skopje+1000%2C+North+Macedonia&output=embed"
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+              ></iframe>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="cta-strip">
+            <div>
+              <p class="cta-kicker" id="i18n-cta-kicker">VLERA LUXURY HOME</p>
+              <h3 class="cta-title" id="i18n-cta-title">
+                Krijo tavolinen tende perfekte sot
+              </h3>
+              <p class="cta-text" id="i18n-cta-text">
+                Koleksione premium, pagese vetem cash ne dorezim dhe poste falas
+                mbi 75 �.
+              </p>
+            </div>
+            <div class="cta-actions">
+              <a class="btn btn-primary" id="i18n-cta-btn-shop" href="shop.html"
+                >Shiko Shop</a
+              >
+              <a
+                class="btn cta-btn-outline"
+                id="i18n-cta-btn-categories"
+                href="categories.html"
+                >Shiko Kategorite</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-grid">
+        <div>
+          <a class="logo" href="index.html"
+            ><strong>VLERA</strong><span>Luxury Home</span></a
+          >
+          <p id="i18n-footer-desc">
+            Porosi te thjeshta me Cash on Delivery / Payment on Post.
+          </p>
+        </div>
+        <div>
+          <h4 id="i18n-footer-quick">Shpejt</h4>
+          <ul>
+            <li><a href="shop.html" id="i18n-footer-shop">Shop</a></li>
+            <li>
+              <a href="categories.html" id="i18n-footer-categories"
+                >Kategorite</a
+              >
+            </li>
+            <li>
+              <a href="checkout.html" id="i18n-footer-checkout">Checkout</a>
+            </li>
+            <li>
+              <a href="track-order.html" id="i18n-footer-track">Statusi</a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h4 id="i18n-footer-info">Info</h4>
+          <ul>
+            <li><a href="about.html" id="i18n-footer-about">Rreth Nesh</a></li>
+            <li><a href="contact.html" id="i18n-footer-contact">Kontakt</a></li>
+            <li><a href="search.html" id="i18n-footer-search">Kerko</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Social</h4>
+          <ul>
+            <li>
+              <a
+                class="social-ig"
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://www.instagram.com/vlerahomee?igsh=dDBudTY5dmwyM240"
+              >
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2Zm8.58 2a1.17 1.17 0 1 0 0 2.33 1.17 1.17 0 0 0 0-2.33ZM12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6Z"
+                  />
+                </svg>
+                <span>@vlerahomee</span>
+              </a>
+            </li>
+            <li>
+              <a
+                class="social-wa"
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://wa.me/38975465888"
+              >
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M19.1 4.9A9.8 9.8 0 0 0 3.6 16.5L2 22l5.7-1.5a9.8 9.8 0 0 0 4.6 1.2h.1A9.9 9.9 0 0 0 19.1 4.9Zm-6.7 15.2h-.1a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3.4.9.9-3.3-.2-.3a8.2 8.2 0 1 1 7.3 4Zm4.5-6.1c-.2-.1-1.2-.6-1.4-.7-.2-.1-.3-.1-.5.1-.1.2-.5.7-.6.8-.1.1-.2.1-.4 0a6.7 6.7 0 0 1-2-1.2 7.3 7.3 0 0 1-1.4-1.8c-.1-.2 0-.3.1-.4l.3-.3.2-.3a.4.4 0 0 0 0-.4c0-.1-.5-1.3-.7-1.8-.2-.5-.4-.4-.5-.4h-.4a.8.8 0 0 0-.6.3c-.2.2-.8.8-.8 1.9s.8 2.1 1 2.3c.1.1 1.5 2.4 3.7 3.3.5.2.9.4 1.2.5.5.2.9.2 1.2.1.4-.1 1.2-.5 1.3-1 .2-.5.2-.9.1-1-.1-.1-.2-.1-.4-.2Z"
+                  />
+                </svg>
+                <span>WhatsApp</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        &copy; <span data-year></span> VLERA Luxury Home
+      </div>
+    </footer>
+
+    <script src="./assets/js/main.js?v=20260330-113"></script>
+  </body>
+</html>

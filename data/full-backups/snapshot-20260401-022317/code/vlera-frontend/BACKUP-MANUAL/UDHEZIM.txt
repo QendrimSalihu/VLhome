@@ -1,0 +1,7 @@
+﻿Si me be backup manual:
+
+1. Hape folderin BACKUP-MANUAL.
+2. Kliko dy here mbi BACKUP-FULL.bat.
+3. Backup ruhet te: C:\Users\ThisPC\Desktop\VleraHome\data\full-backups
+
+Mund ta ekzekutosh sa here te duash.

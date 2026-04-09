@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Produkti | VLERA</title>
+  <link rel="stylesheet" href="./assets/css/style.css?v=20260330-129">
+</head>
+<body>
+  <div class="topbar" id="i18n-product-topbar">Detajet e produktit</div>
+  <header class="header">
+    <div class="container header-inner">
+      <a class="logo" href="index.html"><strong>VLERA</strong><span>Luxury Home</span></a>
+      <nav class="nav">
+        <a href="index.html">Home</a>
+        <a href="shop.html">Shop</a>
+        <a href="categories.html">Kategorite</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="track-order.html" id="i18n-nav-track">Statusi i Porosise</a>
+      </nav>
+      <div class="header-actions">
+        <a class="icon-btn" href="wishlist.html">&#9825;</a>
+        <a class="cart-btn" href="cart.html" aria-label="Shporta">&#128722;<strong data-cart-count>0</strong></a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" id="product-view">
+    <section class="page-head"><h1 id="product-title">Produkti</h1></section>
+    <section class="split">
+      <div class="panel">
+        <img id="product-image" class="product-detail-image" src="./assets/placeholders/product.svg" alt="Produkt" loading="eager" decoding="async" fetchpriority="high" width="900" height="900">
+        <div id="product-gallery" class="product-gallery-thumbs"></div>
+      </div>
+      <div class="panel">
+        <span class="badge" id="product-category">Kategori</span>
+        <h2 style="text-align:left;margin-top:10px;margin-bottom:6px" id="product-title-2">Detajet</h2>
+        <div class="price" style="font-size:28px;margin-bottom:12px" id="product-price">0.00 €</div>
+        <p style="line-height:1.8;color:var(--muted)" id="product-description"></p>
+        <ul style="line-height:1.9;color:var(--muted)">
+          <li id="product-set-persons" style="display:none"></li>
+          <li id="i18n-product-info-1">Pagesa: Cash on Delivery / Payment on Post</li>
+          <li id="i18n-product-info-2">Eksperience Premium: Cdo porosi konfirmohet personalisht nga stafi VLERA.</li>
+          <li id="i18n-product-info-3">Garanci: Porosia duhet te hapet para postes, ne pranine e korrierit. Nese porosia vjen e demtuar, behet kthimi i pageses ose zevendesimi me produkt te ri.</li>
+        </ul>
+        <div class="product-detail-actions">
+          <button id="product-add-btn" class="btn btn-primary product-detail-cta" data-add-cart>Shto ne shporte</button>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="padding-top:26px">
+      <h2 style="text-align:left;margin-bottom:10px">Mund te te pelqejne edhe</h2>
+      <div id="product-related" class="product-grid"></div>
+    </section>
+  </main>
+  <footer class="footer"><div class="container footer-bottom">&copy; <span data-year></span> VLERA Luxury Home</div></footer>
+  <script src="./assets/js/main.js?v=20260330-147"></script>
+  <script>
+    const t = document.getElementById("product-title");
+    const t2 = document.getElementById("product-title-2");
+    const sync = () => { t2.textContent = t.textContent; };
+    new MutationObserver(sync).observe(t, { childList: true });
+    sync();
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

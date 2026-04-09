@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 40" role="img" aria-label="Flamuri i Maqedonise">
+  <rect width="60" height="40" fill="#d20000"/>
+  <g fill="#ffe600">
+    <polygon points="30,20 60,0 60,6 36,20 60,34 60,40"/>
+    <polygon points="30,20 0,0 0,6 24,20 0,34 0,40"/>
+    <polygon points="30,20 20,0 25,0 30,12 35,0 40,0"/>
+    <polygon points="30,20 20,40 25,40 30,28 35,40 40,40"/>
+    <polygon points="30,20 60,20 60,24 44,20 60,16 60,20"/>
+    <polygon points="30,20 0,20 0,24 16,20 0,16 0,20"/>
+    <polygon points="30,20 50,2 54,2 36,20 54,38 50,38"/>
+    <polygon points="30,20 10,2 6,2 24,20 6,38 10,38"/>
+  </g>
+  <circle cx="30" cy="20" r="6.2" fill="#ffe600"/>
+</svg>

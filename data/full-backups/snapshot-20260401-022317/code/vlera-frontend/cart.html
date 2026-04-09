@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shporta | VLERA</title>
+  <link rel="stylesheet" href="./assets/css/style.css?v=20260330-129">
+</head>
+<body>
+  <div class="topbar" id="i18n-cart-topbar">Shporta e klientit</div>
+  <header class="header">
+    <div class="container header-inner">
+      <a class="logo" href="index.html"><strong>VLERA</strong><span>Luxury Home</span></a>
+      <nav class="nav">
+        <a href="index.html">Home</a>
+        <a href="shop.html">Shop</a>
+        <a href="categories.html">Kategorite</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="track-order.html" id="i18n-nav-track">Statusi i Porosise</a>
+      </nav>
+      <div class="header-actions">
+        <a class="icon-btn" href="wishlist.html">&#9825;</a>
+        <a class="cart-btn" href="cart.html" aria-label="Shporta">&#128722;<strong data-cart-count>0</strong></a>
+      </div>
+    </div>
+  </header>
+  <main class="container">
+    <section class="page-head"><h1 id="i18n-cart-title">Shporta</h1></section>
+    <section class="cart-layout">
+      <div class="panel"><div id="cart-items"></div></div>
+      <aside class="panel">
+        <h3 id="i18n-cart-summary-title" style="margin-top:0">Permbledhje</h3>
+        <p style="display:flex;justify-content:space-between"><span id="i18n-cart-subtotal-label">Nentotali</span><strong id="cart-subtotal">0.00 &euro;</strong></p>
+        <p style="display:flex;justify-content:space-between"><span id="i18n-cart-shipping-label">Dergesa</span><strong id="cart-shipping">0.00 &euro;</strong></p>
+        <hr style="border:none;border-top:1px solid var(--border)">
+        <p style="display:flex;justify-content:space-between;font-size:18px"><span id="i18n-cart-total-label">Totali</span><strong id="cart-total">0.00 &euro;</strong></p>
+        <a class="btn btn-primary" id="i18n-cart-cta" style="display:block;text-align:center" href="checkout.html">Vazhdo ne Checkout</a>
+      </aside>
+    </section>
+  </main>
+  <footer class="footer"><div class="container footer-bottom">&copy; <span data-year></span> VLERA Luxury Home</div></footer>
+  <script src="./assets/js/main.js?v=20260330-113"></script>
+</body>
+</html>
+
