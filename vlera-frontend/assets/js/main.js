@@ -1,4 +1,4 @@
-﻿const HOSTNAME = window.location.hostname || "";
+const HOSTNAME = window.location.hostname || "";
 const LOCAL_HOSTS = ["", "localhost", "127.0.0.1"];
 const IS_FILE_PROTOCOL = window.location.protocol === "file:";
 const IS_PRIVATE_IP = /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[0-1])\.)/.test(HOSTNAME);
@@ -6,7 +6,7 @@ const IS_LOCALHOST = LOCAL_HOSTS.includes(HOSTNAME);
 const IS_LOCAL_NETWORK = IS_FILE_PROTOCOL || IS_LOCALHOST || IS_PRIVATE_IP;
 const API_ORIGIN = IS_LOCAL_NETWORK
   ? `http://${IS_LOCALHOST || IS_FILE_PROTOCOL ? "localhost" : HOSTNAME}:4000`
-  : "https://vlerahomewebsite.onrender.com";
+  : window.location.origin;
 const API_BASE = `${API_ORIGIN}/api`;
 const CART_KEY = "vlera_cart_tmp";
 const CART_BACKUP_KEY = "vlera_cart_tmp_backup";
@@ -1598,26 +1598,18 @@ function renderHomeCategories() {
   const wrap = document.querySelector("#home-categories");
   if (!wrap) return;
   const list = [...state.categories];
-  const isMobile = window.matchMedia("(max-width: 760px)").matches;
+  wrap.classList.add("home-categories-host");
   if (list.length) {
-    if (isMobile) {
-      wrap.innerHTML = `
-        <div class="home-categories-scroller-wrap">
-          <div class="home-categories-scroller">
-            <a class="home-category-chip is-all" href="shop.html">Te Gjitha</a>
-            ${list
-              .map((c) => {
-                const safeName = escapeHtml(c?.name || "");
-                const href = `shop.html?category=${encodeURIComponent(c?.name || "")}`;
-                return `<a class="home-category-chip" href="${href}">${safeName}</a>`;
-              })
-              .join("")}
-          </div>
+    wrap.innerHTML = `
+      <div class="home-categories-carousel" data-home-cat-carousel>
+        <button class="home-cat-nav home-cat-prev" type="button" aria-label="Kategorite majtas">&#10094;</button>
+        <div class="home-categories-viewport" data-home-cat-track>
+          ${list.map(categoryCard).join("")}
         </div>
-      `;
-    } else {
-      wrap.innerHTML = list.map(categoryCard).join("");
-    }
+        <button class="home-cat-nav home-cat-next" type="button" aria-label="Kategorite djathtas">&#10095;</button>
+      </div>
+    `;
+    setupHomeCategoriesCarousel(wrap);
   } else {
     wrap.innerHTML = `<div class="panel"><p class="lead" style="text-align:left;margin:0">${t("empty_categories")}</p></div>`;
   }
@@ -1626,6 +1618,32 @@ function renderHomeCategories() {
     btn.classList.add("hidden");
     btn.disabled = true;
   }
+}
+
+function setupHomeCategoriesCarousel(scope) {
+  const root = scope?.querySelector("[data-home-cat-carousel]");
+  const track = scope?.querySelector("[data-home-cat-track]");
+  const prev = scope?.querySelector(".home-cat-prev");
+  const next = scope?.querySelector(".home-cat-next");
+  if (!root || !track || !prev || !next) return;
+
+  const updateNavState = () => {
+    const maxScroll = Math.max(0, track.scrollWidth - track.clientWidth);
+    prev.disabled = track.scrollLeft <= 4;
+    next.disabled = track.scrollLeft >= maxScroll - 4;
+  };
+
+  const step = () => Math.max(260, Math.round(track.clientWidth * 0.82));
+
+  prev.addEventListener("click", () => {
+    track.scrollBy({ left: -step(), behavior: "smooth" });
+  });
+  next.addEventListener("click", () => {
+    track.scrollBy({ left: step(), behavior: "smooth" });
+  });
+  track.addEventListener("scroll", updateNavState, { passive: true });
+  window.addEventListener("resize", updateNavState, { passive: true });
+  requestAnimationFrame(updateNavState);
 }
 
 function renderCategoriesPage() {
@@ -1644,7 +1662,7 @@ function renderCategoriesPage() {
     }
     const remain = Math.max(0, list.length - visible);
     if (remain > 0) {
-      btn.textContent = getLang() === "mk" ? `Prikazhi poveke (${remain})` : `Shfaq me shume (${remain})`;
+      btn.textContent = getLang() === "mk" ? `Prikazhi poveke (${remain})` : `Me shume produkte (${remain})`;
       btn.classList.remove("hidden");
       btn.disabled = false;
     } else {
@@ -1664,7 +1682,7 @@ function renderHomeProducts() {
   if (btn) {
     const remain = Math.max(0, Number(state.homePagination.total || 0) - visible);
     if (state.homePagination.page < state.homePagination.totalPages && remain > 0) {
-      btn.textContent = getLang() === "mk" ? `Prikazi povekje (${remain})` : `Shfaq me shume (${remain})`;
+      btn.textContent = getLang() === "mk" ? `Prikazi povekje (${remain})` : `Me shume produkte (${remain})`;
       btn.classList.remove("hidden");
       btn.disabled = false;
     } else {
@@ -1686,7 +1704,7 @@ function renderHomeBestSellers() {
   if (btn) {
     const remain = Math.max(0, Number(state.bestPagination.total || 0) - visible);
     if (state.bestPagination.page < state.bestPagination.totalPages && remain > 0) {
-      btn.textContent = getLang() === "mk" ? `Prikazhi poveke (${remain})` : `Shfaq me shume (${remain})`;
+      btn.textContent = getLang() === "mk" ? `Prikazhi poveke (${remain})` : `Me shume produkte (${remain})`;
       btn.classList.remove("hidden");
       btn.disabled = false;
     } else {
@@ -1708,7 +1726,7 @@ function renderHomeNewArrivals() {
   if (btn) {
     const remain = Math.max(0, Number(state.newPagination.total || 0) - visible);
     if (state.newPagination.page < state.newPagination.totalPages && remain > 0) {
-      btn.textContent = getLang() === "mk" ? `Prikazhi poveke (${remain})` : `Shfaq me shume (${remain})`;
+      btn.textContent = getLang() === "mk" ? `Prikazhi poveke (${remain})` : `Me shume produkte (${remain})`;
       btn.classList.remove("hidden");
       btn.disabled = false;
     } else {
@@ -1793,7 +1811,7 @@ function renderShopProducts() {
   if (btn) {
     const remain = Math.max(0, Number(state.shopPagination.total || 0) - visible);
     if (state.shopPagination.page < state.shopPagination.totalPages && remain > 0) {
-      btn.textContent = getLang() === "mk" ? `Prikazi povekje (${remain})` : `Shfaq me shume (${remain})`;
+      btn.textContent = getLang() === "mk" ? `Prikazi povekje (${remain})` : `Me shume produkte (${remain})`;
       btn.classList.remove("hidden");
       btn.disabled = false;
     } else {
@@ -1817,7 +1835,7 @@ function renderOffersProducts() {
   if (btn) {
     const remain = Math.max(0, Number(state.offersPagination.total || 0) - visible);
     if (state.offersPagination.page < state.offersPagination.totalPages && remain > 0) {
-      btn.textContent = getLang() === "mk" ? `Prikazi povekje (${remain})` : `Shfaq me shume (${remain})`;
+      btn.textContent = getLang() === "mk" ? `Prikazi povekje (${remain})` : `Me shume produkte (${remain})`;
       btn.classList.remove("hidden");
       btn.disabled = false;
     } else {
