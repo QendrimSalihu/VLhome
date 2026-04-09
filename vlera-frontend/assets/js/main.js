@@ -730,11 +730,9 @@ async function ensureAdminSession() {
   if (!isAdminPage()) return true;
   const hasSession = await checkAdminSession();
   if (hasSession) {
-    try {
-      await api("/admin/logout", { method: "POST" });
-    } catch {
-      // Ignore and still force a fresh login prompt below.
-    }
+    setAdminUiLocked(false);
+    clearAdminToken();
+    return true;
   }
 
   clearAdminToken();
@@ -3858,18 +3856,7 @@ function rerenderAll() {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
-  if (isAdminPage()) {
-    try {
-      await fetch(`${API_BASE}/admin/logout`, {
-        method: "POST",
-        credentials: "include"
-      });
-    } catch {
-      // Ignore: if backend is down, page still stays locked.
-    }
-    clearAdminToken();
-    setAdminUiLocked(true);
-  }
+  if (isAdminPage()) setAdminUiLocked(true);
   relocateHeaderSearchForms();
   window.addEventListener("resize", relocateHeaderSearchForms);
   setLang(getLang());
