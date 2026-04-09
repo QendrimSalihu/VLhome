@@ -730,11 +730,14 @@ async function ensureAdminSession() {
   if (!isAdminPage()) return true;
   const hasSession = await checkAdminSession();
   if (hasSession) {
-    setAdminUiLocked(false);
-    clearAdminToken();
-    return true;
+    try {
+      await api("/admin/logout", { method: "POST" });
+    } catch {
+      // Ignore and still force a fresh login prompt below.
+    }
   }
 
+  clearAdminToken();
   setAdminUiLocked(true);
   const form = document.querySelector("#admin-login-form");
   const emailInput = document.querySelector("#admin-login-email");
@@ -747,6 +750,8 @@ async function ensureAdminSession() {
     throw new Error("Forma e login admin mungon.");
   }
 
+  emailInput.value = "";
+  passInput.value = "";
   if (passToggle && !passToggle.dataset.bound) {
     passToggle.dataset.bound = "1";
     passToggle.onclick = () => {
