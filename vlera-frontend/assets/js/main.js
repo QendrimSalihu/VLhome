@@ -3060,6 +3060,7 @@ async function bootCheckout() {
     }
     if (!zone) return failField(deliveryZoneInput, "Zgjedh shtetin / zonen e dergeses.");
     if (!city) return failField(cityInput, "Shkruaj qytetin.");
+    if (city.length < 4) return failField(cityInput, "Qyteti duhet te kete minimumi 4 karaktere.");
     if (!address) return failField(addressInput, "Shkruaj adresen.");
     if (address.length < 4) return failField(addressInput, "Adresa duhet te kete minimumi 4 karaktere.");
     return true;
