@@ -3055,7 +3055,7 @@ async function bootCheckout() {
 
     if (!fullName) return failField(fullNameInput, "Shkruaj emrin dhe mbiemrin.");
     if (!phone) return failField(phoneInput, "Shkruaj numrin e telefonit.");
-    if (phone.length < 6 || phone.length > 15) {
+    if (!/^\d{6,15}$/.test(phone)) {
       return failField(phoneInput, "Numri i telefonit duhet te kete 6 deri ne 15 karaktere.");
     }
     if (!zone) return failField(deliveryZoneInput, "Zgjedh shtetin / zonen e dergeses.");

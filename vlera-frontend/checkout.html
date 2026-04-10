@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="sq">
 <head>
   <meta charset="UTF-8">
@@ -31,7 +31,7 @@
         <h3 id="i18n-checkout-form-title" style="margin-top:0">Te dhenat e porosise</h3>
         <div class="filters" style="grid-template-columns:1fr 1fr">
           <input required name="fullName" placeholder="Emri dhe Mbiemri">
-          <input required name="phone" placeholder="Numri i telefonit">
+          <input required name="phone" inputmode="numeric" pattern="[0-9]{6,15}" maxlength="15" placeholder="Numri i telefonit">
           <select required name="deliveryZone">
             <option value="">Zgjedh shtetin / zonen</option>
           </select>
@@ -47,22 +47,22 @@
         <h3 id="i18n-checkout-summary-title" style="margin-top:0">Permbledhja</h3>
         <div class="checkout-trust-box">
           <span class="trust-pill" id="checkout-trust-cash">Vetem Cash ne Dorezim</span>
-          <span class="trust-pill" id="checkout-trust-free">Poste falas mbi 75 €</span>
+          <span class="trust-pill" id="checkout-trust-free">Poste falas mbi 75 â‚¬</span>
         </div>
         <div id="cart-items"></div>
         <hr style="border:none;border-top:1px solid var(--border)">
-        <p style="display:flex;justify-content:space-between"><span id="i18n-checkout-subtotal-label">Nentotali</span><strong id="cart-subtotal">0.00 €</strong></p>
-        <p style="display:flex;justify-content:space-between"><span id="i18n-checkout-shipping-label">Posta</span><strong id="cart-shipping">0.00 €</strong></p>
+        <p style="display:flex;justify-content:space-between"><span id="i18n-checkout-subtotal-label">Nentotali</span><strong id="cart-subtotal">0.00 â‚¬</strong></p>
+        <p style="display:flex;justify-content:space-between"><span id="i18n-checkout-shipping-label">Posta</span><strong id="cart-shipping">0.00 â‚¬</strong></p>
         <p id="delivery-time-hint" class="badge" style="margin-top:6px">Zgjidh zonen per afatin e dergeses.</p>
-        <p id="free-shipping-hint" class="badge" style="margin-top:6px">Posta falas per porosi mbi 75 €.</p>
-        <p style="display:flex;justify-content:space-between;font-size:18px"><span id="i18n-checkout-total-label">Totali</span><strong id="cart-total">0.00 €</strong></p>
+        <p id="free-shipping-hint" class="badge" style="margin-top:6px">Posta falas per porosi mbi 75 â‚¬.</p>
+        <p style="display:flex;justify-content:space-between;font-size:18px"><span id="i18n-checkout-total-label">Totali</span><strong id="cart-total">0.00 â‚¬</strong></p>
       </aside>
     </section>
   </main>
   <div class="checkout-mobile-sticky" id="checkout-mobile-sticky">
     <div class="checkout-mobile-meta">
       <small>Totali</small>
-      <strong id="mobile-cart-total">0.00 €</strong>
+      <strong id="mobile-cart-total">0.00 â‚¬</strong>
     </div>
     <button class="btn btn-primary" id="mobile-checkout-submit" type="button">Konfirmo porosine</button>
   </div>
@@ -70,6 +70,7 @@
   <script src="./assets/js/main.js?v=20260330-112"></script>
 </body>
 </html>
+
 
 
 
