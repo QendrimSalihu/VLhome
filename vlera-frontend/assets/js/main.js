@@ -3026,6 +3026,51 @@ function bootShopFilters() {
 async function bootCheckout() {
   const form = document.querySelector("#checkout-form");
   if (!form) return;
+  const fullNameInput = form.querySelector("[name='fullName']");
+  const phoneInput = form.querySelector("[name='phone']");
+  const deliveryZoneInput = form.querySelector("[name='deliveryZone']");
+  const cityInput = form.querySelector("[name='city']");
+  const addressInput = form.querySelector("[name='address']");
+
+  const clearFieldErrors = () => {
+    [fullNameInput, phoneInput, deliveryZoneInput, cityInput, addressInput].forEach((el) => {
+      if (el) el.setCustomValidity("");
+    });
+  };
+
+  const failField = (el, message) => {
+    if (!el) return false;
+    el.setCustomValidity(message);
+    el.reportValidity();
+    return false;
+  };
+
+  const validateCheckoutFields = () => {
+    clearFieldErrors();
+    const fullName = String(fullNameInput?.value || "").trim();
+    const phone = String(phoneInput?.value || "").trim();
+    const zone = String(deliveryZoneInput?.value || "").trim();
+    const city = String(cityInput?.value || "").trim();
+    const address = String(addressInput?.value || "").trim();
+
+    if (!fullName) return failField(fullNameInput, "Shkruaj emrin dhe mbiemrin.");
+    if (!phone) return failField(phoneInput, "Shkruaj numrin e telefonit.");
+    if (phone.length < 6 || phone.length > 15) {
+      return failField(phoneInput, "Numri i telefonit duhet te kete 6 deri ne 15 karaktere.");
+    }
+    if (!zone) return failField(deliveryZoneInput, "Zgjedh shtetin / zonen e dergeses.");
+    if (!city) return failField(cityInput, "Shkruaj qytetin.");
+    if (!address) return failField(addressInput, "Shkruaj adresen.");
+    if (address.length < 4) return failField(addressInput, "Adresa duhet te kete minimumi 4 karaktere.");
+    return true;
+  };
+
+  [fullNameInput, phoneInput, deliveryZoneInput, cityInput, addressInput].forEach((el) => {
+    if (!el) return;
+    el.addEventListener("input", () => el.setCustomValidity(""));
+    el.addEventListener("change", () => el.setCustomValidity(""));
+  });
+
   document.body.classList.add("checkout-has-sticky");
   const mobileSubmit = document.querySelector("#mobile-checkout-submit");
   if (mobileSubmit) {
@@ -3043,14 +3088,15 @@ async function bootCheckout() {
         : "Zgjedh te pakten nje produkt per porosi.");
     }
 
-    const fullName = form.querySelector("[name='fullName']").value.trim();
-    const phone = form.querySelector("[name='phone']").value.trim();
-    const deliveryZoneId = Number(form.querySelector("[name='deliveryZone']").value || 0);
-    const city = form.querySelector("[name='city']").value.trim();
-    const address = form.querySelector("[name='address']").value.trim();
+    if (!validateCheckoutFields()) return;
+
+    const fullName = fullNameInput.value.trim();
+    const phone = phoneInput.value.trim();
+    const deliveryZoneId = Number(deliveryZoneInput.value || 0);
+    const city = cityInput.value.trim();
+    const address = addressInput.value.trim();
     const social = form.querySelector("[name='social']").value.trim();
     const note = form.querySelector("[name='note']").value.trim();
-    if (!fullName || !phone || !deliveryZoneId || !city || !address) return alert(t("fill_required"));
     const payload = {
       customer: {
         full_name: fullName,
