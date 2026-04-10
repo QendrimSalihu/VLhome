@@ -2,9 +2,23 @@ import app from "./app.js";
 import { env } from "./config/env.js";
 import { initDatabase } from "./database/init.js";
 import { optimizeExistingUploads } from "./utils/optimizeExistingUploads.js";
+import { migrateLegacyUploadsToWebp } from "./utils/migrateLegacyUploadsToWebp.js";
 
 async function start() {
   await initDatabase();
+
+  try {
+    const migration = await migrateLegacyUploadsToWebp({ uploadsPath: env.uploadsPath });
+    if (migration?.skipped) {
+      console.log(`Legacy WEBP migration skipped (${migration.reason}).`);
+    } else {
+      console.log(
+        `Legacy WEBP migration done: files=${migration.filesCreated}, categories=${migration.categoriesUpdated}, slides=${migration.slidersUpdated}, products=${migration.productsUpdated}, galleries=${migration.galleriesUpdated}`
+      );
+    }
+  } catch (error) {
+    console.warn("Legacy WEBP migration skipped due to error:", error?.message || error);
+  }
 
   try {
     const stats = await optimizeExistingUploads({ uploadsPath: env.uploadsPath });
