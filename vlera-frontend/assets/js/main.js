@@ -2470,31 +2470,70 @@ async function loadSettingsData() {
 
 async function loadCoreData() {
   try {
+    const page = getPageSourceName();
     const adminMode = isAdminPage();
     if (adminMode) {
       const okSession = await ensureAdminSession();
       if (!okSession) return;
     }
-    await loadSettingsData();
-    state.categories = await api("/categories");
-    state.slides = await api("/slides");
-    state.deliveryZones = await api("/delivery-zones");
-    populateSelects();
-    const tasks = [
-      loadHomeProducts({ append: false }),
-      loadHomeBestSellers(),
-      loadHomeNewArrivals(),
-      loadShopProducts({ append: false }),
-      loadOffersProducts({ append: false }),
-      loadProductDetailsData(),
-      loadSearchResultsData(),
-      loadWishlistProducts()
-    ];
+
+    const needsCategories = adminMode || page === "index" || page === "categories" || page === "shop";
+    const needsSlides = adminMode || page === "index";
+    const needsDeliveryZones = adminMode || page === "checkout";
+
+    const baseTasks = [loadSettingsData()];
+    if (needsCategories) {
+      baseTasks.push(
+        api("/categories").then((data) => {
+          state.categories = Array.isArray(data) ? data : [];
+        })
+      );
+    }
+    if (needsSlides) {
+      baseTasks.push(
+        api("/slides").then((data) => {
+          state.slides = Array.isArray(data) ? data : [];
+        })
+      );
+    }
+    if (needsDeliveryZones) {
+      baseTasks.push(
+        api("/delivery-zones").then((data) => {
+          state.deliveryZones = Array.isArray(data) ? data : [];
+        })
+      );
+    }
+    await Promise.all(baseTasks);
+
+    if (needsCategories) populateSelects();
+
+    const tasks = [];
+    if (page === "index") {
+      tasks.push(loadHomeProducts({ append: false }), loadHomeBestSellers(), loadHomeNewArrivals());
+    }
+    if (page === "shop") {
+      tasks.push(loadShopProducts({ append: false }));
+    }
+    if (page === "offers") {
+      tasks.push(loadOffersProducts({ append: false }));
+    }
+    if (page === "product") {
+      tasks.push(loadProductDetailsData());
+    }
+    if (page === "search") {
+      tasks.push(loadSearchResultsData());
+    }
+    if (page === "wishlist") {
+      tasks.push(loadWishlistProducts());
+    }
     if (adminMode) {
       tasks.push(loadAdminProducts(), loadAdminOrders(), loadAdminCustomers(), loadAdminContactMessages(), loadAdminWhatsAppMessages());
     }
     await Promise.all(tasks);
-    await loadRelatedProductsData();
+
+    if (page === "product") {
+      await loadRelatedProductsData();
+    }
     applyBusinessSettings();
   } catch (error) {
     console.error(error);
