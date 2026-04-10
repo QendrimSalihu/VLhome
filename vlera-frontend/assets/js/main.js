@@ -271,6 +271,14 @@ function setAttr(selector, attr, value) {
   if (el) el.setAttribute(attr, value);
 }
 
+function digitsOnly(value) {
+  return String(value || "").replace(/\D/g, "");
+}
+
+function isValidPhoneDigits(value) {
+  return /^\d{6,15}$/.test(String(value || ""));
+}
+
 function relocateHeaderSearchForms() {
   const header = document.querySelector(".header");
   if (!header) return;
@@ -891,7 +899,7 @@ function ensureWhatsAppLeadModal() {
         </label>
         <label>
           Telefoni
-          <input name="phone" type="tel" placeholder="07X XXX XXX" required>
+          <input name="phone" type="tel" inputmode="numeric" pattern="[0-9]{6,15}" maxlength="15" placeholder="07X XXX XXX" required>
         </label>
         <label>
           Mesazhi
@@ -914,7 +922,14 @@ function openWhatsAppLeadModal(_defaultMessage = "", onSubmit) {
   const closeBtn = overlay.querySelector(".wa-lead-close");
   const cancelBtn = overlay.querySelector(".wa-cancel-btn");
   const messageInput = form?.querySelector("[name='message']");
+  const phoneInput = form?.querySelector("[name='phone']");
   if (!form || !messageInput) return;
+
+  if (phoneInput) {
+    phoneInput.addEventListener("input", () => {
+      phoneInput.value = digitsOnly(phoneInput.value).slice(0, 15);
+    });
+  }
 
   messageInput.value = "";
   overlay.classList.add("show");
@@ -936,10 +951,14 @@ function openWhatsAppLeadModal(_defaultMessage = "", onSubmit) {
   form.onsubmit = async (e) => {
     e.preventDefault();
     const fullName = String(form.querySelector("[name='fullName']")?.value || "").trim();
-    const phone = String(form.querySelector("[name='phone']")?.value || "").trim();
+    const phone = digitsOnly(form.querySelector("[name='phone']")?.value || "");
     const message = String(form.querySelector("[name='message']")?.value || "").trim();
     if (!phone || !message) {
       showInlineToast("Shkruaj telefonin dhe mesazhin.", "warn");
+      return;
+    }
+    if (!isValidPhoneDigits(phone)) {
+      showInlineToast("Telefoni duhet te kete vetem numra (6-15).", "warn");
       return;
     }
     await onSubmit({ fullName, phone, message });
@@ -2935,14 +2954,24 @@ function bootAdminNavigation() {
 function bootContactForm() {
   const form = document.querySelector("#contact-form");
   if (!form) return;
+  const phoneInput = form.querySelector("[name='phone']");
+  if (phoneInput) {
+    phoneInput.addEventListener("input", () => {
+      phoneInput.value = digitsOnly(phoneInput.value).slice(0, 15);
+    });
+  }
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const fullName = form.querySelector("[name='fullName']")?.value.trim() || "";
     const email = form.querySelector("[name='email']")?.value.trim() || "";
-    const phone = form.querySelector("[name='phone']")?.value.trim() || "";
+    const phone = digitsOnly(form.querySelector("[name='phone']")?.value || "");
     const message = form.querySelector("[name='message']")?.value.trim() || "";
     if (!fullName || !message) {
       alert("Ploteso emrin dhe mesazhin.");
+      return;
+    }
+    if (phone && !isValidPhoneDigits(phone)) {
+      alert("Telefoni duhet te kete vetem numra (6-15).");
       return;
     }
     try {
