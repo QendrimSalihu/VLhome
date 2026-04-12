@@ -74,7 +74,20 @@ const trackingRateLimit = createRateLimiter({
   message: "Shume kerkesa per gjurmim porosie. Provo perseri pas pak."
 });
 
-app.use("/uploads", express.static(path.resolve(process.cwd(), env.uploadsPath)));
+app.use(
+  "/uploads",
+  express.static(path.resolve(process.cwd(), env.uploadsPath), {
+    etag: true,
+    lastModified: true,
+    maxAge: "365d",
+    immutable: true,
+    setHeaders: (res, filePath) => {
+      if (/\.(webp|jpg|jpeg|png|gif|svg)$/i.test(filePath)) {
+        res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+      }
+    }
+  })
+);
 
 app.use("/api/health", healthRoutes);
 app.get("/api/order-tracking", trackingRateLimit, asyncHandler(orderController.trackPublic));
