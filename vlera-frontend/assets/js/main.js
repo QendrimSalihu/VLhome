@@ -275,8 +275,19 @@ function digitsOnly(value) {
   return String(value || "").replace(/\D/g, "");
 }
 
+function normalizePhoneInput(value) {
+  let raw = String(value || "").replace(/[^\d+]/g, "");
+  const hasPlus = raw.startsWith("+");
+  raw = raw.replace(/\+/g, "");
+  const digits = raw.slice(0, 15);
+  return hasPlus ? `+${digits}` : digits;
+}
+
 function isValidPhoneDigits(value) {
-  return /^\d{6,15}$/.test(String(value || ""));
+  const normalized = normalizePhoneInput(value);
+  if (!/^\+?\d+$/.test(normalized)) return false;
+  const digitCount = normalized.replace(/\D/g, "").length;
+  return digitCount >= 6 && digitCount <= 15;
 }
 
 function relocateHeaderSearchForms() {
@@ -899,7 +910,7 @@ function ensureWhatsAppLeadModal() {
         </label>
         <label>
           Telefoni
-          <input name="phone" type="tel" inputmode="numeric" pattern="[0-9]{6,15}" maxlength="15" placeholder="07X XXX XXX" required>
+          <input name="phone" type="tel" inputmode="tel" pattern="\\+?[0-9]{6,15}" maxlength="16" placeholder="07X XXX XXX" required>
         </label>
         <label>
           Mesazhi
@@ -927,7 +938,7 @@ function openWhatsAppLeadModal(_defaultMessage = "", onSubmit) {
 
   if (phoneInput) {
     phoneInput.addEventListener("input", () => {
-      phoneInput.value = digitsOnly(phoneInput.value).slice(0, 15);
+      phoneInput.value = normalizePhoneInput(phoneInput.value);
     });
   }
 
@@ -951,7 +962,7 @@ function openWhatsAppLeadModal(_defaultMessage = "", onSubmit) {
   form.onsubmit = async (e) => {
     e.preventDefault();
     const fullName = String(form.querySelector("[name='fullName']")?.value || "").trim();
-    const phone = digitsOnly(form.querySelector("[name='phone']")?.value || "");
+    const phone = normalizePhoneInput(form.querySelector("[name='phone']")?.value || "");
     const message = String(form.querySelector("[name='message']")?.value || "").trim();
     if (!phone || !message) {
       showInlineToast("Shkruaj telefonin dhe mesazhin.", "warn");
@@ -2957,14 +2968,14 @@ function bootContactForm() {
   const phoneInput = form.querySelector("[name='phone']");
   if (phoneInput) {
     phoneInput.addEventListener("input", () => {
-      phoneInput.value = digitsOnly(phoneInput.value).slice(0, 15);
+      phoneInput.value = normalizePhoneInput(phoneInput.value);
     });
   }
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const fullName = form.querySelector("[name='fullName']")?.value.trim() || "";
     const email = form.querySelector("[name='email']")?.value.trim() || "";
-    const phone = digitsOnly(form.querySelector("[name='phone']")?.value || "");
+    const phone = normalizePhoneInput(form.querySelector("[name='phone']")?.value || "");
     const message = form.querySelector("[name='message']")?.value.trim() || "";
     if (!fullName || !message) {
       alert("Ploteso emrin dhe mesazhin.");
@@ -3116,14 +3127,14 @@ async function bootCheckout() {
   const validateCheckoutFields = () => {
     clearFieldErrors();
     const fullName = String(fullNameInput?.value || "").trim();
-    const phone = String(phoneInput?.value || "").trim();
+    const phone = normalizePhoneInput(phoneInput?.value || "");
     const zone = String(deliveryZoneInput?.value || "").trim();
     const city = String(cityInput?.value || "").trim();
     const address = String(addressInput?.value || "").trim();
 
     if (!fullName) return failField(fullNameInput, "Shkruaj emrin dhe mbiemrin.");
     if (!phone) return failField(phoneInput, "Shkruaj numrin e telefonit.");
-    if (!/^\d{6,15}$/.test(phone)) {
+    if (!isValidPhoneDigits(phone)) {
       return failField(phoneInput, "Numri i telefonit duhet te kete 6 deri ne 15 karaktere.");
     }
     if (!zone) return failField(deliveryZoneInput, "Zgjedh shtetin / zonen e dergeses.");
@@ -3139,6 +3150,13 @@ async function bootCheckout() {
     el.addEventListener("input", () => el.setCustomValidity(""));
     el.addEventListener("change", () => el.setCustomValidity(""));
   });
+
+  if (phoneInput) {
+    phoneInput.addEventListener("input", () => {
+      phoneInput.value = normalizePhoneInput(phoneInput.value);
+      phoneInput.setCustomValidity("");
+    });
+  }
 
   document.body.classList.add("checkout-has-sticky");
   const mobileSubmit = document.querySelector("#mobile-checkout-submit");
@@ -3160,7 +3178,7 @@ async function bootCheckout() {
     if (!validateCheckoutFields()) return;
 
     const fullName = fullNameInput.value.trim();
-    const phone = phoneInput.value.trim();
+    const phone = normalizePhoneInput(phoneInput.value || "");
     const deliveryZoneId = Number(deliveryZoneInput.value || 0);
     const city = cityInput.value.trim();
     const address = addressInput.value.trim();

@@ -31,7 +31,7 @@
         <h3 id="i18n-checkout-form-title" style="margin-top:0">Te dhenat e porosise</h3>
         <div class="filters" style="grid-template-columns:1fr 1fr">
           <input required name="fullName" placeholder="Emri dhe Mbiemri">
-          <input required name="phone" inputmode="numeric" pattern="[0-9]{6,15}" maxlength="15" placeholder="Numri i telefonit">
+          <input required name="phone" type="tel" inputmode="tel" pattern="\+?[0-9]{6,15}" maxlength="16" placeholder="Numri i telefonit">
           <select required name="deliveryZone">
             <option value="">Zgjedh shtetin / zonen</option>
           </select>

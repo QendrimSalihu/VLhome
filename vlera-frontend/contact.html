@@ -32,7 +32,7 @@
         <div class="filters" style="grid-template-columns:1fr 1fr;gap:14px">
           <input id="i18n-contact-name" name="fullName" placeholder="Emri" style="height:52px;font-size:16px" required>
           <input id="i18n-contact-email" name="email" placeholder="Email" style="height:52px;font-size:16px">
-          <input id="i18n-contact-phone" name="phone" type="tel" inputmode="numeric" pattern="[0-9]{6,15}" maxlength="15" placeholder="Telefoni" style="grid-column:1/-1;height:52px;font-size:16px">
+          <input id="i18n-contact-phone" name="phone" type="tel" inputmode="tel" pattern="\+?[0-9]{6,15}" maxlength="16" placeholder="Telefoni" style="grid-column:1/-1;height:52px;font-size:16px">
           <textarea id="i18n-contact-message" name="message" placeholder="Mesazhi" style="grid-column:1/-1;min-height:220px;font-size:16px" required></textarea>
         </div>
         <button type="submit" id="i18n-contact-btn" class="btn btn-primary" style="margin-top:14px;height:48px;padding:0 22px">Dergo Mesazhin</button>
