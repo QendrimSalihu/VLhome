@@ -74,12 +74,8 @@ export async function migrateLegacyUploadsToWebp({ uploadsPath }) {
   await fs.mkdir(root, { recursive: true });
 
   const markerPath = path.join(root, MARKER_FILE);
-  try {
-    await fs.access(markerPath);
-    return { skipped: true, reason: "already_migrated", root };
-  } catch {
-    // first run
-  }
+  // Run as incremental migration on every boot:
+  // if new legacy jpg/png paths appear later (restores/imports), we still convert them to webp.
 
   const db = await getDb();
   const categories = await db.all("SELECT id, image_path FROM categories");
@@ -164,6 +160,7 @@ export async function migrateLegacyUploadsToWebp({ uploadsPath }) {
     {
       version: 1,
       migrated_at: new Date().toISOString(),
+      mode: "incremental",
       files_created: filesCreated,
       categories_updated: categoriesUpdated,
       sliders_updated: slidersUpdated,
@@ -185,4 +182,3 @@ export async function migrateLegacyUploadsToWebp({ uploadsPath }) {
     galleriesUpdated
   };
 }
-
