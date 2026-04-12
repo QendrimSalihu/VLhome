@@ -1623,7 +1623,7 @@ async function loadAdminProducts({ append = false } = {}) {
     page: nextPage,
     limit: state.adminProductFilters.limit,
     sort: "newest",
-    include_inactive: 1
+    include_inactive: 0
   });
   if (data?.pagination?.totalPages && nextPage > data.pagination.totalPages) {
     state.adminProductFilters.page = data.pagination.totalPages;
@@ -1631,7 +1631,7 @@ async function loadAdminProducts({ append = false } = {}) {
       page: state.adminProductFilters.page,
       limit: state.adminProductFilters.limit,
       sort: "newest",
-      include_inactive: 1
+      include_inactive: 0
     });
   }
   state.adminProducts = append ? [...state.adminProducts, ...(data.items || [])] : (data.items || []);

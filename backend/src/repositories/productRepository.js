@@ -188,11 +188,33 @@ export const productRepository = {
   },
   async remove(id) {
     const db = await getDb();
-    const linked = await db.get("SELECT COUNT(*) as total FROM order_items WHERE product_id = ?", [id]);
-    if (Number(linked?.total || 0) > 0) {
-      throw badRequest("Ky produkt nuk mund te fshihet sepse eshte i lidhur me porosi. Fshi porosite test fillimisht, pastaj fshije produktin.");
+    const productId = Number(id);
+    if (!Number.isInteger(productId) || productId <= 0) {
+      throw badRequest("Produkt i pavlefshem.");
     }
-    return db.run("DELETE FROM products WHERE id = ?", [id]);
+
+    const existing = await db.get("SELECT id FROM products WHERE id = ?", [productId]);
+    if (!existing) {
+      throw badRequest("Produkti nuk u gjet.");
+    }
+
+    const linked = await db.get("SELECT COUNT(*) as total FROM order_items WHERE product_id = ?", [productId]);
+    if (Number(linked?.total || 0) > 0) {
+      await db.run(
+        `UPDATE products
+         SET is_active = 0,
+             updated_at = CURRENT_TIMESTAMP
+         WHERE id = ?`,
+        [productId]
+      );
+      return { id: productId, archived: true };
+    }
+
+    const result = await db.run("DELETE FROM products WHERE id = ?", [productId]);
+    if (!Number(result?.changes || 0)) {
+      throw badRequest("Produkti nuk u gjet.");
+    }
+    return { id: productId, deleted: true };
   },
   async removeAll() {
     const db = await getDb();
