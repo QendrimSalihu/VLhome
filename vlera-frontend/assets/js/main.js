@@ -2140,14 +2140,15 @@ function renderAdminCategories() {
   body.innerHTML = visible
     ? state.categories
         .slice(0, visible)
-        .map((c) => {
+        .map((c, index) => {
           const safeId = Number(c.id || 0);
+          const rowNo = index + 1;
           const safeName = escapeHtml(c.name || "-");
           const safeDesc = escapeHtml(c.description || "-");
           const safeImage = escapeHtml(toImageUrl(c.image_path) || PLACEHOLDER_CATEGORY);
           return `
       <tr>
-        <td>${safeId}</td>
+        <td>${rowNo}</td>
         <td><img src="${safeImage}" alt="${safeName}" style="width:40px;height:40px;border-radius:6px;object-fit:cover"></td>
         <td>${safeName}</td>
         <td>${safeDesc}</td>
