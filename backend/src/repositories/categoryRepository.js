@@ -1,4 +1,5 @@
 import { getDb } from "../database/connection.js";
+import { badRequest, HttpError } from "../utils/httpError.js";
 
 export const categoryRepository = {
   async getAll() {
@@ -30,6 +31,25 @@ export const categoryRepository = {
   },
   async remove(id) {
     const db = await getDb();
-    return db.run("DELETE FROM categories WHERE id = ?", [id]);
+    const categoryId = Number(id);
+    if (!Number.isInteger(categoryId) || categoryId <= 0) {
+      throw badRequest("Kategori e pavlefshme.");
+    }
+
+    const category = await db.get("SELECT id, name FROM categories WHERE id = ?", [categoryId]);
+    if (!category) {
+      throw new HttpError(404, "Kategoria nuk u gjet.");
+    }
+
+    const inUse = await db.get("SELECT COUNT(*) as cnt FROM products WHERE category_id = ?", [categoryId]);
+    if (Number(inUse?.cnt || 0) > 0) {
+      throw badRequest("Kjo kategori ka produkte. Kalo produktet ne kategori tjeter ose fshiji produktet, pastaj fshije kategorine.");
+    }
+
+    const result = await db.run("DELETE FROM categories WHERE id = ?", [categoryId]);
+    if (!Number(result?.changes || 0)) {
+      throw new HttpError(404, "Kategoria nuk u gjet.");
+    }
+    return { id: categoryId, deleted: true };
   }
 };
