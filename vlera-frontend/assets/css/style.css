@@ -1413,6 +1413,24 @@ main > .section + .section .container::before{
   font-size:12px;
   letter-spacing:1px;
 }
+.product-rating .stars-rail{
+  position:relative;
+  display:inline-block;
+  line-height:1;
+  font-size:12px;
+  letter-spacing:1px;
+}
+.product-rating .stars-base{
+  color:#d7dde5;
+}
+.product-rating .stars-fill{
+  position:absolute;
+  left:0;
+  top:0;
+  white-space:nowrap;
+  overflow:hidden;
+  color:#f59e0b;
+}
 .product-rating .rating-value{
   font-size:11px;
   font-weight:700;

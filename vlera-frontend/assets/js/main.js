@@ -290,6 +290,18 @@ function isValidPhoneDigits(value) {
   return digitCount >= 6 && digitCount <= 15;
 }
 
+function ratingStarsMarkup(value) {
+  const numeric = Number(value || 0);
+  const safe = Number.isFinite(numeric) ? Math.max(0, Math.min(5, numeric)) : 0;
+  const widthPct = (safe / 5) * 100;
+  return `
+    <span class="stars-rail" aria-hidden="true">
+      <span class="stars-base">★★★★★</span>
+      <span class="stars-fill" style="width:${widthPct.toFixed(1)}%">★★★★★</span>
+    </span>
+  `;
+}
+
 function relocateHeaderSearchForms() {
   const header = document.querySelector(".header");
   if (!header) return;
@@ -1306,7 +1318,7 @@ function productCard(product) {
       </div>
       <div class="meta">
         <h3 class="product-title"><a class="product-title-link" href="product.html?id=${productId}">${safeTitle}</a></h3>
-        <div class="product-rating" aria-label="rating"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="rating-value">${ratingLabel}</span></div>
+        <div class="product-rating" aria-label="rating">${ratingStarsMarkup(ratingValue)}<span class="rating-value">${ratingLabel}</span></div>
         <div class="product-benefit">${safeBenefit}</div>
         <div class="product-trust-badges">
           <span class="trust-pill">${escapeHtml(trustPremium)}</span>
