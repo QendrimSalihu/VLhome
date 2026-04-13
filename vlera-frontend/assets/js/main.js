@@ -3893,13 +3893,48 @@ function editProduct(id) {
 }
 
 async function deleteProduct(id) {
+  const productId = Number(id);
   try {
-    await api(`/products/${id}`, { method: "DELETE" });
+    await api(`/products/${productId}`, { method: "DELETE" });
     await loadAdminProducts({ append: false });
     renderAdminProducts();
     renderAdminProductPagination();
   } catch (error) {
-    alert(error.message);
+    const msg = String(error?.message || "");
+    const linkedToOrders = msg.toLowerCase().includes("i lidhur me porosi");
+    if (linkedToOrders) {
+      try {
+        const existing = state.adminProducts.find((p) => Number(p.id) === productId);
+        if (!existing) throw new Error("Produkti nuk u gjet ne listen e Admin.");
+        await api(`/products/${productId}`, {
+          method: "PUT",
+          body: JSON.stringify({
+            category_id: Number(existing.category_id || 0),
+            title: existing.title || "",
+            price: Number(existing.price || 0),
+            discount_price: Number(existing.discount_price || 0),
+            description: existing.description || "",
+            image_path: existing.image_path || "",
+            gallery_paths: Array.isArray(existing.gallery_paths) ? existing.gallery_paths : [],
+            is_new_arrival: Number(existing.is_new_arrival || 0),
+            is_best_seller: Number(existing.is_best_seller || 0),
+            sold_count: Number(existing.sold_count || 0),
+            stock_qty: Number(existing.stock_qty || 0),
+            set_persons: [6, 12, 18].includes(Number(existing.set_persons)) ? Number(existing.set_persons) : null,
+            rating_value: Number(existing.rating_value || 0) > 0 ? Number(existing.rating_value) : null,
+            is_active: 0
+          })
+        });
+        state.adminProducts = state.adminProducts.filter((p) => Number(p.id) !== productId);
+        renderAdminProducts();
+        renderAdminProductPagination();
+        return;
+      } catch (fallbackError) {
+        alert(fallbackError.message || msg);
+        return;
+      }
+    }
+    alert(msg);
   }
 }
 
