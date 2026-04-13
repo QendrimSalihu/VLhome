@@ -3793,8 +3793,9 @@ async function bootAdmin() {
         }
         productForm.reset();
         resetProductFormMode(productForm);
-        await loadCoreData();
-        rerenderAll();
+        await loadAdminProducts({ append: false });
+        renderAdminProducts();
+        renderAdminProductPagination();
       } catch (error) {
         alert(error.message);
       }
