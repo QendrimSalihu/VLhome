@@ -2116,8 +2116,8 @@ function renderAdminProducts() {
           ${Number(p.is_active || 0) === 1 ? `<span class="badge">Active</span>` : `<span class="badge" style="background:#fce7e7;color:#8a1221">Hidden</span>`}
         </td>
         <td class="admin-row-actions">
-          <button class="small-btn" onclick="editProduct(${safeId})">Edit</button>
-          <button class="small-btn" onclick="deleteProduct(${safeId})">Fshi</button>
+          <button class="small-btn" type="button" onclick="editProduct(${safeId})">Edit</button>
+          <button class="small-btn" type="button" onclick="deleteProduct(${safeId})">Fshi</button>
         </td>
       </tr>`;
         })
@@ -3895,8 +3895,9 @@ function editProduct(id) {
 async function deleteProduct(id) {
   try {
     await api(`/products/${id}`, { method: "DELETE" });
-    await loadCoreData();
-    rerenderAll();
+    await loadAdminProducts({ append: false });
+    renderAdminProducts();
+    renderAdminProductPagination();
   } catch (error) {
     alert(error.message);
   }
