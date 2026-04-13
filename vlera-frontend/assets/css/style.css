@@ -2679,7 +2679,21 @@ main .load-more-btn:hover{
   .track-order-form-grid{grid-template-columns:1fr}
   .track-order-head{flex-direction:column;align-items:flex-start}
   .track-order-meta-grid{grid-template-columns:1fr}
-  .shop-filters{grid-template-columns:1fr}
+  .shop-filters{
+    grid-template-columns:1fr;
+    gap:10px;
+    position:relative;
+  }
+  .shop-filters::before{
+    content:"Zgjidh kategorine";
+    display:block;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:#2d5f58;
+    margin:0 2px 2px;
+  }
   /* Mobile shop: show only category filter */
   .shop-filters > #shop-search,
   .shop-filters > #shop-sort,
@@ -2693,34 +2707,50 @@ main .load-more-btn:hover{
   .shop-filters > #shop-category{
     display:block;
     width:100%;
-    min-height:52px;
-    border:1px solid #c9d8d5;
-    border-radius:14px;
-    background-color:#f9fcfb;
+    min-height:54px;
+    border:1px solid #c7d9d4;
+    border-radius:15px;
+    background-color:#f7fbfa;
     color:#153c39;
-    font-weight:600;
-    padding:0 46px 0 14px;
+    font-weight:700;
+    letter-spacing:.01em;
+    padding:0 48px 0 42px;
     appearance:none;
     -webkit-appearance:none;
     -moz-appearance:none;
     background-image:
+      radial-gradient(circle at 17px 50%, #2a7a73 0 8px, transparent 9px),
       linear-gradient(45deg, transparent 50%, #1f5e58 50%),
       linear-gradient(135deg, #1f5e58 50%, transparent 50%);
     background-position:
+      0 0,
       calc(100% - 19px) 22px,
       calc(100% - 13px) 22px;
-    background-size:6px 6px, 6px 6px;
+    background-size:
+      100% 100%,
+      6px 6px,
+      6px 6px;
     background-repeat:no-repeat;
-    transition:border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
+    box-shadow:
+      0 7px 18px rgba(12,43,39,.08),
+      inset 0 1px 0 rgba(255,255,255,.9);
+    transition:
+      border-color .2s ease,
+      box-shadow .2s ease,
+      background-color .2s ease,
+      transform .2s ease;
   }
   .shop-filters > #shop-category:hover{
-    border-color:#9ab8b2;
+    border-color:#8eafa8;
     background-color:#ffffff;
+    transform:translateY(-1px);
   }
   .shop-filters > #shop-category:focus{
     outline:none;
     border-color:#2a7a73;
-    box-shadow:0 0 0 3px rgba(42,122,115,.14);
+    box-shadow:
+      0 10px 24px rgba(12,43,39,.14),
+      0 0 0 3px rgba(42,122,115,.16);
     background-color:#ffffff;
   }
   .footer-grid{grid-template-columns:1fr}
