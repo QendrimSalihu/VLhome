@@ -2693,6 +2693,35 @@ main .load-more-btn:hover{
   .shop-filters > #shop-category{
     display:block;
     width:100%;
+    min-height:52px;
+    border:1px solid #c9d8d5;
+    border-radius:14px;
+    background-color:#f9fcfb;
+    color:#153c39;
+    font-weight:600;
+    padding:0 46px 0 14px;
+    appearance:none;
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    background-image:
+      linear-gradient(45deg, transparent 50%, #1f5e58 50%),
+      linear-gradient(135deg, #1f5e58 50%, transparent 50%);
+    background-position:
+      calc(100% - 19px) 22px,
+      calc(100% - 13px) 22px;
+    background-size:6px 6px, 6px 6px;
+    background-repeat:no-repeat;
+    transition:border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
+  }
+  .shop-filters > #shop-category:hover{
+    border-color:#9ab8b2;
+    background-color:#ffffff;
+  }
+  .shop-filters > #shop-category:focus{
+    outline:none;
+    border-color:#2a7a73;
+    box-shadow:0 0 0 3px rgba(42,122,115,.14);
+    background-color:#ffffff;
   }
   .footer-grid{grid-template-columns:1fr}
   .admin-main{padding:10px}
