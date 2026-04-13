@@ -511,7 +511,7 @@ function applyI18n() {
     setText(".topbar", mk ? "Prelistaj proizvodi" : "Shfleto produktet");
     setText(".page-head h1", mk ? "Prodavnica" : "Shop");
     setAttr("#shop-search", "placeholder", mk ? "Prebaraj proizvod..." : "Kerko produkt...");
-    setText("#shop-category option[value='']", mk ? "Kategorija" : "Kategoria");
+    setText("#shop-category option[value='']", mk ? "Site proizvodi" : "Te gjitha produktet");
     setText("#shop-sort option[value='newest']", mk ? "Najnovi" : "Me te rejat");
     setText("#shop-sort option[value='price_asc']", mk ? "Cena rastecki" : "Cmimi ne rritje");
     setText("#shop-sort option[value='price_desc']", mk ? "Cena opagjacki" : "Cmimi ne ulje");
@@ -1793,7 +1793,7 @@ function populateSelects() {
     shopSelect.innerHTML = "";
     const placeholder = document.createElement("option");
     placeholder.value = "";
-    placeholder.textContent = getLang() === "mk" ? "Kategoria" : "Kategoria";
+    placeholder.textContent = getLang() === "mk" ? "Site proizvodi" : "Te gjitha produktet";
     shopSelect.appendChild(placeholder);
     state.categories.forEach((c) => {
       const opt = document.createElement("option");
