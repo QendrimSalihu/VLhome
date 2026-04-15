@@ -3132,7 +3132,7 @@ main .load-more-btn:hover{
 @media (max-width:760px){
   .product-grid{
     grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-    gap:6px !important;
+    gap:8px !important;
   }
   .product-card{
     border-radius:4px !important;
@@ -3198,7 +3198,7 @@ main .load-more-btn:hover{
   .product-grid{
     display:grid !important;
     grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-    gap:6px !important;
+    gap:8px !important;
     column-count:initial !important;
     column-gap:0 !important;
   }
