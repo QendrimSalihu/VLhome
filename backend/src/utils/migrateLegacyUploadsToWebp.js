@@ -1,11 +1,18 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import sharp from "sharp";
 import { getDb } from "../database/connection.js";
 
 const LEGACY_EXT = new Set([".jpg", ".jpeg", ".png"]);
 const MARKER_FILE = ".migrated-webp-v1";
 const MAX_DIMENSION = 1600;
+
+let sharpModule = null;
+async function getSharp() {
+  if (sharpModule) return sharpModule;
+  const imported = await import("sharp");
+  sharpModule = imported?.default || imported;
+  return sharpModule;
+}
 
 function isLegacyUploadPath(value) {
   if (typeof value !== "string") return false;
@@ -20,6 +27,7 @@ function toWebpUploadPath(value) {
 }
 
 async function ensureWebpFile(root, oldRelPath) {
+  const sharp = await getSharp();
   const oldName = oldRelPath.replace(/^\/uploads\//i, "");
   const oldAbs = path.join(root, oldName);
   const webpRel = toWebpUploadPath(oldRelPath);
@@ -72,6 +80,12 @@ function replaceGalleryPaths(jsonText) {
 export async function migrateLegacyUploadsToWebp({ uploadsPath }) {
   const root = path.resolve(process.cwd(), uploadsPath || "./uploads");
   await fs.mkdir(root, { recursive: true });
+
+  try {
+    await getSharp();
+  } catch {
+    return { skipped: true, reason: "sharp_unavailable", root };
+  }
 
   const markerPath = path.join(root, MARKER_FILE);
   // Run as incremental migration on every boot:

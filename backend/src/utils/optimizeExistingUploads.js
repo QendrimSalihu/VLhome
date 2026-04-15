@@ -1,11 +1,18 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import sharp from "sharp";
 
 const ALLOWED_EXT = new Set([".jpg", ".jpeg", ".png", ".webp"]);
 const MIN_SIZE_BYTES = 350 * 1024; // skip tiny files
 const MAX_DIMENSION = 1600;
 const MARKER_FILE = ".optimized-v1";
+
+let sharpModule = null;
+async function getSharp() {
+  if (sharpModule) return sharpModule;
+  const imported = await import("sharp");
+  sharpModule = imported?.default || imported;
+  return sharpModule;
+}
 
 function buildEncoder(ext) {
   if (ext === ".jpg" || ext === ".jpeg") {
@@ -18,6 +25,7 @@ function buildEncoder(ext) {
 }
 
 async function optimizeOne(filePath, ext) {
+  const sharp = await getSharp();
   const stat = await fs.stat(filePath);
   if (!stat.isFile() || stat.size < MIN_SIZE_BYTES) return { changed: false, before: stat.size, after: stat.size };
 
@@ -49,6 +57,12 @@ async function optimizeOne(filePath, ext) {
 export async function optimizeExistingUploads({ uploadsPath }) {
   const root = path.resolve(process.cwd(), uploadsPath || "./uploads");
   await fs.mkdir(root, { recursive: true });
+
+  try {
+    await getSharp();
+  } catch {
+    return { skipped: true, reason: "sharp_unavailable", root };
+  }
 
   const markerPath = path.join(root, MARKER_FILE);
   try {
@@ -102,4 +116,3 @@ export async function optimizeExistingUploads({ uploadsPath }) {
     afterBytes: afterTotal
   };
 }
-
