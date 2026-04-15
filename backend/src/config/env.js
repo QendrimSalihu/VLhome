@@ -22,8 +22,8 @@ export const env = {
   port: Number(process.env.PORT || 4000),
   dbPath: readEnv("DB_PATH", { fallback: isProduction ? "/var/data/vlera.sqlite" : "./data/vlera.sqlite" }),
   frontendOrigin: readEnv("FRONTEND_ORIGIN", {
-    fallback: "http://localhost:5500,http://127.0.0.1:5500",
-    requiredInProduction: true
+    fallback: isProduction ? SAFE_PRODUCTION_ORIGINS.join(",") : "http://localhost:5500,http://127.0.0.1:5500",
+    requiredInProduction: false
   }),
   uploadsPath: readEnv("UPLOADS_PATH", { fallback: isProduction ? "/var/data/uploads" : "./uploads" }),
   adminEmail: readEnv("ADMIN_EMAIL", {
