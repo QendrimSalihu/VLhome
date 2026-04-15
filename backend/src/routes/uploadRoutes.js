@@ -9,10 +9,16 @@ import { env } from "../config/env.js";
 import { badRequest } from "../utils/httpError.js";
 
 const uploadsRoot = path.resolve(process.cwd(), env.uploadsPath);
-fs.mkdirSync(uploadsRoot, { recursive: true });
 
 const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, uploadsRoot),
+  destination: (_req, _file, cb) => {
+    try {
+      fs.mkdirSync(uploadsRoot, { recursive: true });
+      cb(null, uploadsRoot);
+    } catch (error) {
+      cb(error);
+    }
+  },
   filename: (_req, file, cb) => {
     const ext = path.extname(file.originalname) || ".jpg";
     const name = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;

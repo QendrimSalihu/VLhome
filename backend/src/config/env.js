@@ -20,12 +20,12 @@ export const env = {
   nodeEnv,
   isProduction,
   port: Number(process.env.PORT || 4000),
-  dbPath: readEnv("DB_PATH", { fallback: "./data/vlera.sqlite" }),
+  dbPath: readEnv("DB_PATH", { fallback: isProduction ? "/var/data/vlera.sqlite" : "./data/vlera.sqlite" }),
   frontendOrigin: readEnv("FRONTEND_ORIGIN", {
     fallback: "http://localhost:5500,http://127.0.0.1:5500",
     requiredInProduction: true
   }),
-  uploadsPath: readEnv("UPLOADS_PATH", { fallback: "./uploads" }),
+  uploadsPath: readEnv("UPLOADS_PATH", { fallback: isProduction ? "/var/data/uploads" : "./uploads" }),
   adminEmail: readEnv("ADMIN_EMAIL", {
     fallback: "qendrim.salihu.tr@gmail.com",
     requiredInProduction: true
@@ -57,5 +57,17 @@ if (env.isProduction) {
     console.warn(`FRONTEND_ORIGIN was invalid in production. Falling back to: ${env.frontendOrigin}`);
   } else {
     env.frontendOrigin = origins.join(",");
+  }
+
+  const prodDb = String(env.dbPath || "").replace(/\\/g, "/");
+  if (!prodDb.startsWith("/var/data/")) {
+    env.dbPath = "/var/data/vlera.sqlite";
+    console.warn(`DB_PATH was invalid in production. Falling back to: ${env.dbPath}`);
+  }
+
+  const prodUploads = String(env.uploadsPath || "").replace(/\\/g, "/");
+  if (!prodUploads.startsWith("/var/data/")) {
+    env.uploadsPath = "/var/data/uploads";
+    console.warn(`UPLOADS_PATH was invalid in production. Falling back to: ${env.uploadsPath}`);
   }
 }
