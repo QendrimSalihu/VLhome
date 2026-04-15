@@ -77,8 +77,8 @@ export const productController = {
     return ok(res, await productService.update(Number(req.params.id), payload));
   },
   async remove(req, res) {
-    await productService.remove(Number(req.params.id));
-    return ok(res, true, "Deleted");
+    const result = await productService.remove(Number(req.params.id));
+    return ok(res, result, "Deleted");
   },
   async removeAll(_req, res) {
     return ok(res, await productService.removeAll(), "Deleted all products");
