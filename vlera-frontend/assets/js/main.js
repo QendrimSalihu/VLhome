@@ -1441,12 +1441,23 @@ function bindWishButtons() {
   });
 }
 
+function mergeUniqueProducts(existing = [], incoming = []) {
+  const seen = new Set(existing.map((item) => Number(item?.id || 0)).filter((id) => id > 0));
+  const extra = incoming.filter((item) => {
+    const id = Number(item?.id || 0);
+    if (!id || seen.has(id)) return false;
+    seen.add(id);
+    return true;
+  });
+  return [...existing, ...extra];
+}
+
 async function loadHomeProducts({ append = false } = {}) {
   if (!document.querySelector("#home-products")) return;
   const nextPage = append ? state.homePagination.page + 1 : 1;
   const data = await fetchProductsPage({ page: nextPage, limit: state.homePagination.limit, sort: "newest" });
   const items = data.items || [];
-  state.homeProducts = append ? [...state.homeProducts, ...items] : items;
+  state.homeProducts = append ? mergeUniqueProducts(state.homeProducts, items) : items;
   state.homePagination = data.pagination || { page: 1, totalPages: 1, total: state.homeProducts.length, limit: state.homePagination.limit };
 }
 
@@ -1472,7 +1483,7 @@ async function loadHomeBestSellers({ append = false } = {}) {
   }
 
   const items = data.items || [];
-  state.bestProducts = append ? [...state.bestProducts, ...items] : items;
+  state.bestProducts = append ? mergeUniqueProducts(state.bestProducts, items) : items;
   state.bestPagination = data.pagination || { page: 1, totalPages: 1, total: state.bestProducts.length, limit: state.bestPagination.limit };
   state.bestMode = mode;
 }
@@ -1499,7 +1510,7 @@ async function loadHomeNewArrivals({ append = false } = {}) {
   }
 
   const items = data.items || [];
-  state.newProducts = append ? [...state.newProducts, ...items] : items;
+  state.newProducts = append ? mergeUniqueProducts(state.newProducts, items) : items;
   state.newPagination = data.pagination || { page: 1, totalPages: 1, total: state.newProducts.length, limit: state.newPagination.limit };
   state.newMode = mode;
 }
@@ -1534,7 +1545,7 @@ async function loadShopProducts({ append = false } = {}) {
     has_discount: state.shopFilters.discountOnly ? 1 : ""
   });
   const items = data.items || [];
-  state.shopProducts = append ? [...state.shopProducts, ...items] : items;
+  state.shopProducts = append ? mergeUniqueProducts(state.shopProducts, items) : items;
   state.shopPagination = data.pagination || { page: 1, totalPages: 1, total: state.shopProducts.length, limit: state.shopFilters.limit };
   state.productTotal = Math.max(state.productTotal, Number(state.shopPagination.total || 0));
 }
@@ -1549,7 +1560,7 @@ async function loadOffersProducts({ append = false } = {}) {
     has_discount: 1
   });
   const items = data.items || [];
-  state.offersProducts = append ? [...state.offersProducts, ...items] : items;
+  state.offersProducts = append ? mergeUniqueProducts(state.offersProducts, items) : items;
   state.offersPagination = data.pagination || { page: 1, totalPages: 1, total: state.offersProducts.length, limit: state.offersPagination.limit };
 }
 

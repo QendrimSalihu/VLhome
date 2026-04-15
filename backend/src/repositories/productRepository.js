@@ -91,7 +91,7 @@ export const productRepository = {
 
     const whereSql = where.length ? `WHERE ${where.join(" AND ")}` : "";
 
-    let orderSql = "ORDER BY p.id DESC";
+    let orderSql = "ORDER BY COALESCE(p.updated_at, p.created_at) DESC, p.id DESC";
     if (sort === "price_asc") orderSql = "ORDER BY COALESCE(NULLIF(p.discount_price, 0), p.price) ASC, p.id DESC";
     if (sort === "price_desc") orderSql = "ORDER BY COALESCE(NULLIF(p.discount_price, 0), p.price) DESC, p.id DESC";
     if (sort === "sold_desc") orderSql = "ORDER BY COALESCE(p.sold_count, 0) DESC, p.id DESC";
