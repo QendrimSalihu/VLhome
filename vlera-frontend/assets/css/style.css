@@ -3200,7 +3200,7 @@ main .load-more-btn:hover{
     grid-template-columns:repeat(2,minmax(0,1fr)) !important;
     gap:12px !important;
     column-count:initial !important;
-    column-gap:0 !important;
+    column-gap:12px !important;
   }
   .product-card{
     display:flex !important;
