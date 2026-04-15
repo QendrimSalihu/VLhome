@@ -23,7 +23,17 @@ export function getResolvedDbPath() {
 export function getDb() {
   if (!dbPromise) {
     const resolved = getResolvedDbPath();
-    fs.mkdirSync(path.dirname(resolved), { recursive: true });
+    const dbDir = path.dirname(resolved);
+    try {
+      fs.mkdirSync(dbDir, { recursive: true });
+    } catch (error) {
+      const code = String(error?.code || "");
+      // In production on Render, /var/data may already exist and mkdir can fail due fs policy.
+      // If directory is present, continue safely instead of crashing startup.
+      if (!["EACCES", "EPERM", "EROFS"].includes(code) || !fs.existsSync(dbDir)) {
+        throw error;
+      }
+    }
     dbPromise = open({
       filename: resolved,
       driver: sqlite3.Database
