@@ -1,10 +1,11 @@
 import app from "./app.js";
 import { env } from "./config/env.js";
 import { initDatabase } from "./database/init.js";
-import { getResolvedDbPath } from "./database/connection.js";
+import { getResolvedDbPath, resolveAppPath } from "./database/connection.js";
 import { getResolvedUploadsPath } from "./storage/uploadsPath.js";
 import { optimizeExistingUploads } from "./utils/optimizeExistingUploads.js";
 import { migrateLegacyUploadsToWebp } from "./utils/migrateLegacyUploadsToWebp.js";
+import { startDailyBackupScheduler } from "./utils/autoBackup.js";
 
 async function start() {
   await initDatabase();
@@ -36,9 +37,20 @@ async function start() {
     console.warn("Upload optimization skipped due to error:", error?.message || error);
   }
 
+  startDailyBackupScheduler({ keepDays: 30 });
+
   app.listen(env.port, () => {
+    const resolvedDbPath = getResolvedDbPath();
+    const configuredDbPath = resolveAppPath(env.dbPath);
+    const fallbackActive = resolvedDbPath !== configuredDbPath;
     console.log(`Backend running on http://localhost:${env.port}`);
-    console.log(`Storage: DB=${getResolvedDbPath()} | uploads=${getResolvedUploadsPath()}`);
+    console.log(`Storage: DB=${resolvedDbPath} | uploads=${getResolvedUploadsPath()}`);
+    if (fallbackActive) {
+      console.warn(`Storage fallback active. Configured DB path=${configuredDbPath} but using ${resolvedDbPath}`);
+    } else {
+      console.log("Storage mount check: using configured DB path.");
+    }
+    console.log("Daily DB backup scheduler active (every 24h, retention 30 days).");
   });
 }
 
