@@ -1,7 +1,8 @@
 import app from "./app.js";
 import { env } from "./config/env.js";
 import { initDatabase } from "./database/init.js";
-import { getResolvedDbPath, resolveAppPath } from "./database/connection.js";
+import { getResolvedDbPath } from "./database/connection.js";
+import { getResolvedUploadsPath } from "./storage/uploadsPath.js";
 import { optimizeExistingUploads } from "./utils/optimizeExistingUploads.js";
 import { migrateLegacyUploadsToWebp } from "./utils/migrateLegacyUploadsToWebp.js";
 
@@ -37,7 +38,7 @@ async function start() {
 
   app.listen(env.port, () => {
     console.log(`Backend running on http://localhost:${env.port}`);
-    console.log(`Storage: DB=${getResolvedDbPath()} | uploads=${resolveAppPath(env.uploadsPath)}`);
+    console.log(`Storage: DB=${getResolvedDbPath()} | uploads=${getResolvedUploadsPath()}`);
   });
 }
 

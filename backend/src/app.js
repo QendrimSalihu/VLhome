@@ -4,6 +4,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import path from "node:path";
 import { env } from "./config/env.js";
+import { getResolvedUploadsPath } from "./storage/uploadsPath.js";
 import healthRoutes from "./routes/healthRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
@@ -76,7 +77,7 @@ const trackingRateLimit = createRateLimiter({
 
 app.use(
   "/uploads",
-  express.static(path.resolve(process.cwd(), env.uploadsPath), {
+  express.static(getResolvedUploadsPath(), {
     etag: true,
     lastModified: true,
     maxAge: "365d",

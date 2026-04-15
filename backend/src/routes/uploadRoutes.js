@@ -5,10 +5,10 @@ import fs from "node:fs";
 import { uploadImageController } from "../controllers/uploadController.js";
 import { asyncHandler } from "../middleware/asyncHandler.js";
 import { requireAdminAuth } from "../middleware/requireAdminAuth.js";
-import { env } from "../config/env.js";
 import { badRequest } from "../utils/httpError.js";
+import { getResolvedUploadsPath } from "../storage/uploadsPath.js";
 
-const uploadsRoot = path.resolve(process.cwd(), env.uploadsPath);
+const uploadsRoot = getResolvedUploadsPath();
 
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => {
