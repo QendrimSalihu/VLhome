@@ -46,14 +46,6 @@ export const categoryRepository = {
       throw badRequest("Kategoria arkive nuk mund te fshihet.");
     }
 
-    const activeInUse = await db.get(
-      "SELECT COUNT(*) as cnt FROM products WHERE category_id = ? AND COALESCE(is_active,1)=1",
-      [categoryId]
-    );
-    if (Number(activeInUse?.cnt || 0) > 0) {
-      throw badRequest("Kjo kategori ka produkte aktive. Fshiji ose zhvendosi produktet aktive, pastaj fshije kategorine.");
-    }
-
     await db.exec("BEGIN");
     try {
       let archive = await db.get("SELECT id FROM categories WHERE name = ?", [ARCHIVE_CATEGORY_NAME]);
