@@ -4,6 +4,7 @@ dotenv.config();
 
 const nodeEnv = process.env.NODE_ENV || "development";
 const isProduction = nodeEnv === "production";
+const SAFE_PRODUCTION_ORIGINS = ["https://www.vlerahome.com", "https://vlerafrontend.vercel.app"];
 
 function readEnv(name, { fallback = "", requiredInProduction = false } = {}) {
   const raw = process.env[name];
@@ -44,6 +45,17 @@ export const env = {
   adminTokenTtlHours: Number(process.env.ADMIN_TOKEN_TTL_HOURS || 24)
 };
 
-if (env.isProduction && String(env.frontendOrigin).split(",").map((x) => x.trim()).includes("*")) {
-  throw new Error("FRONTEND_ORIGIN cannot use '*' in production. Set your real frontend domain.");
+if (env.isProduction) {
+  const origins = String(env.frontendOrigin)
+    .split(",")
+    .map((x) => x.trim())
+    .filter(Boolean)
+    .filter((x) => x !== "*");
+
+  if (origins.length === 0) {
+    env.frontendOrigin = SAFE_PRODUCTION_ORIGINS.join(",");
+    console.warn(`FRONTEND_ORIGIN was invalid in production. Falling back to: ${env.frontendOrigin}`);
+  } else {
+    env.frontendOrigin = origins.join(",");
+  }
 }
