@@ -7,12 +7,22 @@ import { env } from "../config/env.js";
 
 let dbPromise;
 const backendRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
+let resolvedDbPathCache = "";
+
+export function resolveAppPath(inputPath) {
+  return path.isAbsolute(inputPath) ? inputPath : path.resolve(backendRoot, inputPath);
+}
+
+export function getResolvedDbPath() {
+  if (!resolvedDbPathCache) {
+    resolvedDbPathCache = resolveAppPath(env.dbPath);
+  }
+  return resolvedDbPathCache;
+}
 
 export function getDb() {
   if (!dbPromise) {
-    const resolved = path.isAbsolute(env.dbPath)
-      ? env.dbPath
-      : path.resolve(backendRoot, env.dbPath);
+    const resolved = getResolvedDbPath();
     fs.mkdirSync(path.dirname(resolved), { recursive: true });
     dbPromise = open({
       filename: resolved,

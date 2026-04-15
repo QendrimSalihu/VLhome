@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { env } from "../config/env.js";
+import { getResolvedDbPath } from "../database/connection.js";
 
 function stamp() {
   const d = new Date();
@@ -10,7 +10,7 @@ function stamp() {
 
 export function createDatabaseBackup(reason = "auto-change") {
   try {
-    const dbFile = path.resolve(process.cwd(), env.dbPath);
+    const dbFile = getResolvedDbPath();
     const dbDir = path.dirname(dbFile);
     const backupDir = path.resolve(dbDir, "backups");
     fs.mkdirSync(backupDir, { recursive: true });
