@@ -5,23 +5,7 @@ import { getResolvedDbPath, resolveAppPath } from "./database/connection.js";
 import { optimizeExistingUploads } from "./utils/optimizeExistingUploads.js";
 import { migrateLegacyUploadsToWebp } from "./utils/migrateLegacyUploadsToWebp.js";
 
-function assertPersistentStorageInProduction() {
-  if (!env.isProduction) return;
-
-  const resolvedDbPath = getResolvedDbPath().replace(/\\/g, "/");
-  const resolvedUploadsPath = resolveAppPath(env.uploadsPath).replace(/\\/g, "/");
-
-  if (!resolvedDbPath.startsWith("/var/data/")) {
-    throw new Error(`Unsafe DB_PATH for production: ${resolvedDbPath}. Must be under /var/data.`);
-  }
-
-  if (!resolvedUploadsPath.startsWith("/var/data/")) {
-    throw new Error(`Unsafe UPLOADS_PATH for production: ${resolvedUploadsPath}. Must be under /var/data.`);
-  }
-}
-
 async function start() {
-  assertPersistentStorageInProduction();
   await initDatabase();
 
   try {
