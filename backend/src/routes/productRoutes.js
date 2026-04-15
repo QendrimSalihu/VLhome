@@ -10,7 +10,6 @@ const productCachePrefixes = ["/api/products", "/api/categories"];
 
 router.get("/", asyncHandler(productController.list));
 router.get("/:id", asyncHandler(productController.get));
-router.delete("/", requireAdminAuth, asyncHandler(withCacheInvalidation(productController.removeAll, productCachePrefixes)));
 router.post("/", requireAdminAuth, asyncHandler(withCacheInvalidation(productController.create, productCachePrefixes)));
 router.put("/:id", requireAdminAuth, asyncHandler(withCacheInvalidation(productController.update, productCachePrefixes)));
 router.delete("/:id", requireAdminAuth, asyncHandler(withCacheInvalidation(productController.remove, productCachePrefixes)));

@@ -3831,19 +3831,6 @@ async function bootAdmin() {
     }
   });
 
-  document.querySelector("#btn-clear-products")?.addEventListener("click", async () => {
-    const okDelete = window.confirm("A je i sigurt? Do te fshihen te gjitha produktet.");
-    if (!okDelete) return;
-    try {
-      await api("/products", { method: "DELETE" });
-      await loadCoreData();
-      rerenderAll();
-      alert("Te gjitha produktet u fshine me sukses.");
-    } catch (error) {
-      alert(error.message || "Nuk u arrit te fshihen produktet.");
-    }
-  });
-
   document.querySelector("#btn-reset-storage")?.addEventListener("click", () => {
     localStorage.removeItem(CART_KEY);
     localStorage.removeItem(CART_BACKUP_KEY);
