@@ -7,6 +7,7 @@ let resolvedUploadsPathCache = "";
 function tryEnsureDir(dirPath) {
   try {
     fs.mkdirSync(dirPath, { recursive: true });
+    fs.accessSync(dirPath, fs.constants.W_OK);
     return true;
   } catch {
     return false;
@@ -17,7 +18,7 @@ export function getResolvedUploadsPath() {
   if (resolvedUploadsPathCache) return resolvedUploadsPathCache;
 
   const requested = path.resolve(process.cwd(), env.uploadsPath || "./uploads");
-  if (tryEnsureDir(requested) || fs.existsSync(requested)) {
+  if (tryEnsureDir(requested)) {
     resolvedUploadsPathCache = requested;
     return resolvedUploadsPathCache;
   }
@@ -30,4 +31,3 @@ export function getResolvedUploadsPath() {
   }
   return resolvedUploadsPathCache;
 }
-
