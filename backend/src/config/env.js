@@ -28,15 +28,15 @@ export const env = {
   uploadsPath: readEnv("UPLOADS_PATH", { fallback: isProduction ? "/var/data/uploads" : "./uploads" }),
   adminEmail: readEnv("ADMIN_EMAIL", {
     fallback: "qendrim.salihu.tr@gmail.com",
-    requiredInProduction: true
+    requiredInProduction: false
   }),
   adminPassword: readEnv("ADMIN_PASSWORD", {
     fallback: "qendraternoc1",
-    requiredInProduction: true
+    requiredInProduction: false
   }),
   adminTokenSecret: readEnv("ADMIN_TOKEN_SECRET", {
     fallback: "dev-only-secret-change-me",
-    requiredInProduction: true
+    requiredInProduction: false
   }),
   adminCookieName: readEnv("ADMIN_COOKIE_NAME", {
     fallback: "vlera_admin_session",
