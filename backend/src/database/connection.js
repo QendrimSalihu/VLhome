@@ -31,34 +31,33 @@ function getFallbackDbPath() {
 export function getDb() {
   if (!dbPromise) {
     const requestedResolvedPath = getResolvedDbPath();
-    let resolved = requestedResolvedPath;
-    let dbDir = path.dirname(resolved);
-    try {
-      fs.mkdirSync(dbDir, { recursive: true });
-    } catch (error) {
-      const code = String(error?.code || "");
-      const permissionError = ["EACCES", "EPERM", "EROFS"].includes(code);
-      const dirExists = fs.existsSync(dbDir);
+    const openAtPath = async (filePath) =>
+      open({
+        filename: filePath,
+        driver: sqlite3.Database
+      });
 
-      // In production, if /var/data is unavailable, keep service alive by switching
-      // to a local fallback DB path instead of crashing startup.
-      if (permissionError && !dirExists && env.isProduction) {
+    dbPromise = (async () => {
+      // First try the configured DB path (Render disk path in production).
+      try {
+        const requestedDir = path.dirname(requestedResolvedPath);
+        // Create directory only when path is not /var/data production mount.
+        if (!(env.isProduction && requestedResolvedPath.replace(/\\/g, "/").startsWith("/var/data/"))) {
+          fs.mkdirSync(requestedDir, { recursive: true });
+        }
+        return await openAtPath(requestedResolvedPath);
+      } catch (error) {
+        if (!env.isProduction) throw error;
+
+        // Production fallback only if configured storage is unavailable.
         const fallback = getFallbackDbPath();
         const fallbackDir = path.dirname(fallback);
         fs.mkdirSync(fallbackDir, { recursive: true });
-        resolved = fallback;
-        dbDir = fallbackDir;
         resolvedDbPathCache = fallback;
         console.warn(`DB storage path unavailable (${requestedResolvedPath}). Using fallback DB: ${fallback}`);
-      } else if (!permissionError || !dirExists) {
-        throw error;
+        return openAtPath(fallback);
       }
-    }
-
-    dbPromise = open({
-      filename: resolved,
-      driver: sqlite3.Database
-    });
+    })();
   }
   return dbPromise;
 }
