@@ -1375,8 +1375,6 @@ function skeletonCards(count = 8) {
 function showInitialSkeletons() {
   const maps = [
     { selector: "#home-products", count: 8 },
-    { selector: "#home-bestsellers", count: 4 },
-    { selector: "#home-newarrivals", count: 4 },
     { selector: "#shop-products", count: 8 },
     { selector: "#search-grid", count: 8 }
   ];
@@ -2563,7 +2561,7 @@ async function loadCoreData() {
 
     const tasks = [];
     if (page === "index") {
-      tasks.push(loadHomeProducts({ append: false }), loadHomeBestSellers(), loadHomeNewArrivals());
+      tasks.push(loadHomeProducts({ append: false }));
     }
     if (page === "shop") {
       tasks.push(loadShopProducts({ append: false }));
