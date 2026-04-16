@@ -6,7 +6,10 @@ const ARCHIVE_CATEGORY_NAME = "Arkive (Auto)";
 export const categoryRepository = {
   async getAll() {
     const db = await getDb();
-    return db.all("SELECT * FROM categories ORDER BY id ASC");
+    return db.all(
+      "SELECT * FROM categories WHERE TRIM(COALESCE(name, '')) <> ? ORDER BY id ASC",
+      [ARCHIVE_CATEGORY_NAME]
+    );
   },
   async getById(id) {
     const db = await getDb();
