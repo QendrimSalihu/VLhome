@@ -3699,6 +3699,8 @@ async function bootAdmin() {
         });
         categoryForm.reset();
         await loadCoreData();
+        // Show full category list immediately after add so the new item is visible.
+        state.adminVisible.categories = Math.max(state.adminVisible.categories, state.categories.length);
         rerenderAll();
       } catch (error) {
         alert(error.message);
