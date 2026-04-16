@@ -23,11 +23,12 @@ export function getResolvedUploadsPath() {
     return resolvedUploadsPathCache;
   }
 
+  if (env.isProduction) {
+    throw new Error(`Production uploads path unavailable: ${requested}. Must be writable under /var/data/uploads.`);
+  }
+
   const fallback = path.resolve(process.cwd(), "./uploads");
   tryEnsureDir(fallback);
   resolvedUploadsPathCache = fallback;
-  if (env.isProduction) {
-    console.warn(`UPLOADS_PATH unavailable (${requested}). Using fallback uploads path: ${fallback}`);
-  }
   return resolvedUploadsPathCache;
 }
