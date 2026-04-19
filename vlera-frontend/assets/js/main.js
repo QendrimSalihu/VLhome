@@ -1261,9 +1261,10 @@ function categoryCard(category) {
   const safeName = escapeHtml(category?.name || "");
   const safeDesc = escapeHtml(category?.description || t("click_category_products"));
   const safeImage = escapeHtml(toImageUrl(category?.image_path) || PLACEHOLDER_CATEGORY);
+  const safeCategoryFallback = escapeHtml(PLACEHOLDER_CATEGORY);
   return `
     <a class="category-card" href="shop.html?category=${encodeURIComponent(category?.name || "")}">
-      <img src="${safeImage}" alt="${safeName}" loading="lazy" decoding="async" width="800" height="800">
+      <img src="${safeImage}" alt="${safeName}" loading="lazy" decoding="async" width="800" height="800" onerror="this.onerror=null;this.src='${safeCategoryFallback}'">
       <div class="info">
         <h3>${safeName}</h3>
         <p>${safeDesc}</p>
@@ -1297,6 +1298,7 @@ function productCard(product) {
   const disabledAttr = isInStock ? "" : "disabled";
   const safeTitle = escapeHtml(product?.title || "");
   const safeImage = escapeHtml(toImageUrl(product?.image_path) || PLACEHOLDER_PRODUCT);
+  const safeProductFallback = escapeHtml(PLACEHOLDER_PRODUCT);
   const safePrice = escapeHtml(String(price));
   const safeStockQty = escapeHtml(String(stockQty));
   const trustPremium = isMk ? "Premium kvalitet" : "Premium Quality";
@@ -1312,7 +1314,7 @@ function productCard(product) {
     <article class="product-card">
       <div class="product-media">
         <a class="product-media-link" href="product.html?id=${productId}">
-          <img src="${safeImage}" alt="${safeTitle}" loading="lazy" decoding="async" width="900" height="900">
+          <img src="${safeImage}" alt="${safeTitle}" loading="lazy" decoding="async" width="900" height="900" onerror="this.onerror=null;this.src='${safeProductFallback}'">
         </a>
         ${mediaBadges}
       </div>
@@ -1925,7 +1927,7 @@ function renderProductDetails() {
           const safeSrc = escapeHtml(src);
           return `
         <button type="button" class="${index === 0 ? "active" : ""}" data-product-thumb="${safeSrc}">
-          <img src="${safeSrc}" alt="${safeProductTitle}" loading="lazy" decoding="async" width="96" height="96">
+          <img src="${safeSrc}" alt="${safeProductTitle}" loading="lazy" decoding="async" width="96" height="96" onerror="this.onerror=null;this.src='${PLACEHOLDER_PRODUCT}'">
         </button>
       `;
         }
@@ -2015,7 +2017,7 @@ function renderCartBlocks() {
         <label class="cart-select-toggle cart-select-toggle--inline">
           <input type="checkbox" ${isSelected ? "checked" : ""} onchange="toggleCartSelect(${safeId})">
         </label>
-        <img src="${safeImage}" alt="${safeTitle}" loading="lazy" decoding="async" width="90" height="90">
+        <img src="${safeImage}" alt="${safeTitle}" loading="lazy" decoding="async" width="90" height="90" onerror="this.onerror=null;this.src='${PLACEHOLDER_PRODUCT}'">
         <div>
           <div class="cart-select-label">${selectLabel}</div>
           <h3 style="margin:0 0 6px">${safeTitle}</h3>
