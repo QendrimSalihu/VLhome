@@ -5,6 +5,7 @@ import { getResolvedDbPath, resolveAppPath } from "./database/connection.js";
 import { getResolvedUploadsPath } from "./storage/uploadsPath.js";
 import { optimizeExistingUploads } from "./utils/optimizeExistingUploads.js";
 import { migrateLegacyUploadsToWebp } from "./utils/migrateLegacyUploadsToWebp.js";
+import { repairMissingImagePaths } from "./utils/repairMissingImagePaths.js";
 import { startDailyBackupScheduler } from "./utils/autoBackup.js";
 
 async function start() {
@@ -35,6 +36,19 @@ async function start() {
     }
   } catch (error) {
     console.warn("Upload optimization skipped due to error:", error?.message || error);
+  }
+
+  try {
+    const repaired = await repairMissingImagePaths();
+    if (repaired?.skipped) {
+      console.log(`Image-path repair skipped (${repaired.reason}).`);
+    } else {
+      console.log(
+        `Image-path repair done: categories=${repaired.categoriesUpdated}, products=${repaired.productsUpdated}, galleries=${repaired.galleriesUpdated}, slides=${repaired.slidersUpdated}`
+      );
+    }
+  } catch (error) {
+    console.warn("Image-path repair skipped due to error:", error?.message || error);
   }
 
   startDailyBackupScheduler({ keepDays: 30 });
