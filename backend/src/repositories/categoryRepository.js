@@ -41,6 +41,31 @@ async function resolveCategoryImagePath(db, row) {
 }
 
 export const categoryRepository = {
+  async repairMissingImagesFromProducts() {
+    const db = await getDb();
+    const rows = await db.all(
+      `SELECT c.id, c.image_path
+       FROM categories c
+       WHERE TRIM(COALESCE(c.name, '')) <> ?
+       ORDER BY c.id ASC`,
+      [ARCHIVE_CATEGORY_NAME]
+    );
+
+    for (const row of rows) {
+      const current = String(row?.image_path || "").trim();
+      if (isNonEmpty(current) && categoryImageExists(current)) continue;
+
+      const fallback = await pickLatestProductImage(db, row.id);
+      if (!isNonEmpty(fallback) || !categoryImageExists(fallback)) continue;
+
+      await db.run(
+        `UPDATE categories
+         SET image_path = ?, updated_at = CURRENT_TIMESTAMP
+         WHERE id = ?`,
+        [fallback, row.id]
+      );
+    }
+  },
   async getAll() {
     const db = await getDb();
     const rows = await db.all(

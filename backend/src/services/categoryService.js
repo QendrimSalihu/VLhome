@@ -2,7 +2,8 @@ import { categoryRepository } from "../repositories/categoryRepository.js";
 import { createDatabaseBackup } from "../utils/autoBackup.js";
 
 export const categoryService = {
-  list() {
+  async list() {
+    await categoryRepository.repairMissingImagesFromProducts();
     return categoryRepository.getAll();
   },
   create(data) {
