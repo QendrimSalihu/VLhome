@@ -3484,13 +3484,13 @@ main .load-more-btn:hover{
 
 /* Mobile form readability + prevent iOS Safari auto-zoom on focus */
 @media (max-width:980px){
-  body:not(.admin-body) input,
-  body:not(.admin-body) select,
-  body:not(.admin-body) textarea{
+  input,
+  select,
+  textarea{
     font-size:16px !important;
   }
-  body:not(.admin-body) .header-actions input[name="q"],
-  body:not(.admin-body) .header-search-form input[name="q"]{
+  .header-actions input[name="q"],
+  .header-search-form input[name="q"]{
     font-size:16px !important;
   }
 }
