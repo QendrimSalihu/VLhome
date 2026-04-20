@@ -3583,3 +3583,15 @@ main .load-more-btn:hover{
   }
 }
 
+/* Final mobile card image sizing: make product photo look fuller */
+@media (max-width:760px){
+  .product-media{
+    height:200px !important;
+  }
+}
+@media (max-width:420px){
+  .product-media{
+    height:188px !important;
+  }
+}
+
