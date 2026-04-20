@@ -64,7 +64,7 @@ async function start() {
     } else {
       console.log("Storage mount check: using configured DB path.");
     }
-    console.log("Daily DB backup scheduler active (every 24h, retention 30 days).");
+    console.log("Daily full backup scheduler active (DB + uploads every 24h, retention 30 days for daily files).");
   });
 }
 

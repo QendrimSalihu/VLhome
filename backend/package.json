@@ -7,7 +7,8 @@
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "init-db": "node src/database/init.js",
-    "backup-full": "node src/utils/fullBackup.js"
+    "backup-full": "node src/utils/fullBackup.js",
+    "backup:now": "node src/scripts/backupNow.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
