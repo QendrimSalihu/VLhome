@@ -3564,3 +3564,18 @@ main .load-more-btn:hover{
   }
 }
 
+/* Final mobile no-zoom guard for PUBLIC website only (not admin) */
+@media (max-width:980px){
+  body:not(.admin-body) input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  body:not(.admin-body) select,
+  body:not(.admin-body) textarea{
+    font-size:16px !important;
+    line-height:1.35;
+  }
+  body:not(.admin-body) input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):focus,
+  body:not(.admin-body) select:focus,
+  body:not(.admin-body) textarea:focus{
+    font-size:16px !important;
+  }
+}
+
