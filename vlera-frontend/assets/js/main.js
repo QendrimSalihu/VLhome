@@ -593,7 +593,20 @@ function toImageUrl(path) {
   const raw = String(path || "").trim();
   const lower = raw.toLowerCase();
   if (lower.startsWith("javascript:") || lower.startsWith("data:text/html")) return "";
-  if (raw.startsWith("http://") || raw.startsWith("https://")) return encodeURI(raw);
+  if (raw.startsWith("http://") || raw.startsWith("https://")) {
+    try {
+      const parsed = new URL(raw);
+      const pathname = String(parsed.pathname || "");
+      const idx = pathname.toLowerCase().indexOf("/uploads/");
+      if (idx >= 0) {
+        const normalizedUploadsPath = pathname.slice(idx);
+        return encodeURI(`${API_ORIGIN}${normalizedUploadsPath}`);
+      }
+    } catch {
+      // keep original absolute URL below
+    }
+    return encodeURI(raw);
+  }
   if (raw.startsWith("/")) return encodeURI(`${API_ORIGIN}${raw}`);
   if (/^[a-zA-Z]+:/.test(raw)) return "";
   const normalized = raw.replace(/^\.?\//, "");

@@ -22,8 +22,25 @@ function parseGalleryPaths(value) {
 
 function resolveUploadPath(rawPath, availableFiles) {
   const input = String(rawPath || "").trim();
-  if (!input.startsWith("/uploads/")) return "";
-  const fileName = input.split("/").pop() || "";
+  let candidatePath = input;
+  if (/^https?:\/\//i.test(input)) {
+    try {
+      const parsed = new URL(input);
+      candidatePath = parsed.pathname || "";
+    } catch {
+      candidatePath = input;
+    }
+  }
+
+  if (!candidatePath.startsWith("/uploads/")) {
+    const idx = candidatePath.toLowerCase().indexOf("/uploads/");
+    if (idx >= 0) {
+      candidatePath = candidatePath.slice(idx);
+    }
+  }
+
+  if (!candidatePath.startsWith("/uploads/")) return "";
+  const fileName = candidatePath.split("/").pop() || "";
   if (!fileName) return "";
   if (availableFiles.has(fileName)) return toUploadsWebPath(fileName);
 
@@ -144,4 +161,3 @@ export async function repairMissingImagePaths() {
     slidersUpdated
   };
 }
-
