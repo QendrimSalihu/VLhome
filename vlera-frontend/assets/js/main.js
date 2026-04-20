@@ -1642,7 +1642,8 @@ async function loadWishlistProducts() {
 async function loadAdminProducts({ append = false } = {}) {
   const body = document.querySelector("#admin-products-body");
   if (!body) return;
-  const nextPage = append ? state.adminProductPagination.page + 1 : 1;
+  const currentPage = Math.max(1, Number(state.adminProductFilters.page || 1));
+  const nextPage = append ? Math.max(1, Number(state.adminProductPagination.page || 1)) + 1 : currentPage;
   let data = await fetchProductsPage({
     page: nextPage,
     limit: state.adminProductFilters.limit,
@@ -1660,6 +1661,7 @@ async function loadAdminProducts({ append = false } = {}) {
   }
   state.adminProducts = append ? [...state.adminProducts, ...(data.items || [])] : (data.items || []);
   state.adminProductPagination = data.pagination || { page: 1, totalPages: 1, total: state.adminProducts.length, limit: state.adminProductFilters.limit };
+  state.adminProductFilters.page = Math.max(1, Number(state.adminProductPagination.page || nextPage || 1));
   state.productTotal = Number(state.adminProductPagination.total || state.productTotal || 0);
 }
 
@@ -3908,11 +3910,15 @@ function editProduct(id) {
 
 async function deleteProduct(id) {
   const productId = Number(id);
+  const prevScrollY = window.scrollY || window.pageYOffset || 0;
   try {
     await api(`/products/${productId}`, { method: "DELETE" });
     await loadAdminProducts({ append: false });
     renderAdminProducts();
     renderAdminProductPagination();
+    window.requestAnimationFrame(() => {
+      window.scrollTo(0, prevScrollY);
+    });
   } catch (error) {
     const msg = String(error?.message || "");
     const linkedToOrders = msg.toLowerCase().includes("i lidhur me porosi");
@@ -3940,8 +3946,15 @@ async function deleteProduct(id) {
           })
         });
         state.adminProducts = state.adminProducts.filter((p) => Number(p.id) !== productId);
+        if (!state.adminProducts.length && Number(state.adminProductFilters.page || 1) > 1) {
+          state.adminProductFilters.page = Math.max(1, Number(state.adminProductFilters.page || 1) - 1);
+          await loadAdminProducts({ append: false });
+        }
         renderAdminProducts();
         renderAdminProductPagination();
+        window.requestAnimationFrame(() => {
+          window.scrollTo(0, prevScrollY);
+        });
         return;
       } catch (fallbackError) {
         alert(fallbackError.message || msg);
