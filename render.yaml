@@ -15,7 +15,7 @@ services:
       - key: UPLOADS_PATH
         value: /var/data/uploads
       - key: FRONTEND_ORIGIN
-        value: "https://www.vlerahome.com,https://vlerafrontend.vercel.app"
+        value: "https://www.vlerahome.com,https://vlerahome.com"
       - key: ADMIN_EMAIL
         value: admin@vlera.com
       - key: ADMIN_PASSWORD

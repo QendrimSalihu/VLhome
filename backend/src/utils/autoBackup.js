@@ -6,6 +6,22 @@ import { open } from "sqlite";
 import { getResolvedDbPath } from "../database/connection.js";
 import { getResolvedUploadsPath } from "../storage/uploadsPath.js";
 
+const BACKUP_RETENTION_RULES = [
+  { label: "daily db", pattern: /^vlera-db-.*-daily_auto\.sqlite$/i, keepLatest: 7 },
+  { label: "daily uploads", pattern: /^vlera-uploads-.*-daily_auto\.tar\.gz$/i, keepLatest: 7 },
+  { label: "daily manifest", pattern: /^vlera-manifest-.*-daily_auto\.json$/i, keepLatest: 7 },
+  { label: "manual db", pattern: /^vlera-db-.*-manual_now\.sqlite$/i, keepLatest: 5 },
+  { label: "manual uploads", pattern: /^vlera-uploads-.*-manual_now\.tar\.gz$/i, keepLatest: 5 },
+  { label: "manual manifest", pattern: /^vlera-manifest-.*-manual_now\.json$/i, keepLatest: 5 },
+  // High-frequency change snapshots (product/category/order/like/slide etc).
+  { label: "change snapshots", pattern: /^vlera-\d{8}-?\d{6}-.+\.sqlite$/i, keepLatest: 120 },
+  // Legacy sidecar files from previous backup style are not needed.
+  { label: "legacy wal snapshots", pattern: /^vlera-.*\.sqlite-wal$/i, keepLatest: 0 },
+  { label: "legacy shm snapshots", pattern: /^vlera-.*\.sqlite-shm$/i, keepLatest: 0 }
+];
+
+let retentionTick = 0;
+
 function stamp() {
   const d = new Date();
   const p = (n) => String(n).padStart(2, "0");
@@ -58,6 +74,7 @@ export function createDatabaseBackup(reason = "auto-change") {
     const baseName = `vlera-${ts}-${reason.replace(/[^a-zA-Z0-9_-]/g, "_")}`;
     const dbTarget = path.join(backupDir, `${baseName}.sqlite`);
     await createConsistentSqliteSnapshot(dbFile, dbTarget);
+    maybeApplyBackupRetention(backupDir, { keepDays: 30 });
   })().catch((error) => {
     console.error("Auto-backup failed:", error?.message || error);
   });
@@ -107,6 +124,8 @@ export async function createFullProjectBackup(reason = "manual") {
   };
   writeManifest(manifestTarget, payload);
 
+  maybeApplyBackupRetention(backupDir, { force: true, keepDays: 30 });
+
   return {
     dbTarget,
     uploadsTarget,
@@ -115,6 +134,7 @@ export async function createFullProjectBackup(reason = "manual") {
 }
 
 function cleanupOldDailyBackups(backupDir, keepDays = 30) {
+  let removed = 0;
   try {
     const threshold = Date.now() - keepDays * 24 * 60 * 60 * 1000;
     const entries = fs.readdirSync(backupDir, { withFileTypes: true });
@@ -125,10 +145,63 @@ function cleanupOldDailyBackups(backupDir, keepDays = 30) {
       const stat = fs.statSync(filePath);
       if (stat.mtimeMs < threshold) {
         fs.unlinkSync(filePath);
+        removed += 1;
       }
     }
   } catch (error) {
     console.warn("Daily backup cleanup skipped:", error.message);
+  }
+  return removed;
+}
+
+function pruneByCount(backupDir, { pattern, keepLatest = 0 }) {
+  let removed = 0;
+  const entries = fs
+    .readdirSync(backupDir, { withFileTypes: true })
+    .filter((e) => e.isFile() && pattern.test(e.name))
+    .map((e) => {
+      const filePath = path.join(backupDir, e.name);
+      const stat = fs.statSync(filePath);
+      return {
+        filePath,
+        mtimeMs: Number(stat.mtimeMs || 0)
+      };
+    })
+    .sort((a, b) => b.mtimeMs - a.mtimeMs);
+
+  const safeKeep = Math.max(0, Number(keepLatest || 0));
+  for (const entry of entries.slice(safeKeep)) {
+    fs.unlinkSync(entry.filePath);
+    removed += 1;
+  }
+  return removed;
+}
+
+function applyBackupRetention(backupDir, { keepDays = 30 } = {}) {
+  if (!backupDir || !fs.existsSync(backupDir)) return;
+  let totalRemoved = 0;
+  totalRemoved += cleanupOldDailyBackups(backupDir, keepDays);
+
+  try {
+    for (const rule of BACKUP_RETENTION_RULES) {
+      totalRemoved += pruneByCount(backupDir, rule);
+    }
+  } catch (error) {
+    console.warn("Backup retention rule pass skipped:", error.message);
+  }
+
+  if (totalRemoved > 0) {
+    console.log(`Backup retention cleanup removed ${totalRemoved} file(s).`);
+  }
+}
+
+function maybeApplyBackupRetention(backupDir, { force = false, keepDays = 30 } = {}) {
+  retentionTick += 1;
+  if (!force && retentionTick % 25 !== 0) return;
+  try {
+    applyBackupRetention(backupDir, { keepDays });
+  } catch (error) {
+    console.warn("Backup retention cleanup failed:", error.message);
   }
 }
 
@@ -148,7 +221,7 @@ export function startDailyBackupScheduler({
     try {
       const dbFile = getResolvedDbPath();
       const targetDir = backupDir || path.resolve(path.dirname(dbFile), "backups");
-      cleanupOldDailyBackups(targetDir, keepDays);
+      maybeApplyBackupRetention(targetDir, { force: true, keepDays });
     } catch (error) {
       console.warn("Daily backup cleanup failed:", error.message);
     }

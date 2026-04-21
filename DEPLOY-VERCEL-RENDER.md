@@ -5,7 +5,7 @@
 1. Ne Render: **New +** -> **Blueprint**.
 2. Zgjedh repo/projektin dhe perdor file-in `render.yaml`.
 3. Kliko **Apply** dhe prit deploy.
-4. Kur mbaron, kopjo URL e backend-it (p.sh. `https://vlera-backend-xxxx.onrender.com`).
+4. Kur mbaron, kopjo URL e backend-it (aktual: `https://vlhome.onrender.com`).
 5. Provoje health:
    - `https://BACKEND_URL/api/health`
 
@@ -13,11 +13,11 @@
 
 1. Hap file-in:
    - `vlera-frontend/vercel.json`
-2. Zevendeso `RENDER_BACKEND_URL` me domenin real nga Render (pa `/` ne fund).
+2. Sigurohu qe destinacioni eshte backend-i aktiv (aktual: `https://vlhome.onrender.com`).
 
 Shembull:
 - nga `https://RENDER_BACKEND_URL/api/$1`
-- ne `https://vlera-backend-xxxx.onrender.com/api/$1`
+- ne `https://vlhome.onrender.com/api/$1`
 
 ## 3) Frontend live ne Vercel
 

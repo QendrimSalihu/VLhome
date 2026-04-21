@@ -3,11 +3,11 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://vlerahomewebsite.onrender.com/api/$1"
+      "destination": "https://vlhome.onrender.com/api/$1"
     },
     {
       "source": "/uploads/(.*)",
-      "destination": "https://vlerahomewebsite.onrender.com/uploads/$1"
+      "destination": "https://vlhome.onrender.com/uploads/$1"
     },
     {
       "source": "/",

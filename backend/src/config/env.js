@@ -4,7 +4,7 @@ dotenv.config();
 
 const nodeEnv = process.env.NODE_ENV || "development";
 const isProduction = nodeEnv === "production";
-const SAFE_PRODUCTION_ORIGINS = ["https://www.vlerahome.com", "https://vlerafrontend.vercel.app"];
+const SAFE_PRODUCTION_ORIGINS = ["https://www.vlerahome.com", "https://vlerahome.com"];
 
 function readEnv(name, { fallback = "", requiredInProduction = false } = {}) {
   const raw = process.env[name];
