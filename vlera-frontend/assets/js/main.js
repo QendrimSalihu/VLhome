@@ -7,6 +7,8 @@ const IS_LOCAL_NETWORK = IS_FILE_PROTOCOL || IS_LOCALHOST || IS_PRIVATE_IP;
 const API_ORIGIN = IS_LOCAL_NETWORK
   ? `http://${IS_LOCALHOST || IS_FILE_PROTOCOL ? "localhost" : HOSTNAME}:4000`
   : window.location.origin;
+const PROD_UPLOADS_ORIGIN = "https://vlhome.onrender.com";
+const UPLOADS_ORIGIN = IS_LOCAL_NETWORK ? API_ORIGIN : PROD_UPLOADS_ORIGIN;
 const API_BASE = `${API_ORIGIN}/api`;
 const CART_KEY = "vlera_cart_tmp";
 const CART_BACKUP_KEY = "vlera_cart_tmp_backup";
@@ -600,16 +602,20 @@ function toImageUrl(path) {
       const idx = pathname.toLowerCase().indexOf("/uploads/");
       if (idx >= 0) {
         const normalizedUploadsPath = pathname.slice(idx);
-        return encodeURI(`${API_ORIGIN}${normalizedUploadsPath}`);
+        return encodeURI(`${UPLOADS_ORIGIN}${normalizedUploadsPath}`);
       }
     } catch {
       // keep original absolute URL below
     }
     return encodeURI(raw);
   }
+  if (raw.startsWith("/uploads/")) return encodeURI(`${UPLOADS_ORIGIN}${raw}`);
   if (raw.startsWith("/")) return encodeURI(`${API_ORIGIN}${raw}`);
   if (/^[a-zA-Z]+:/.test(raw)) return "";
   const normalized = raw.replace(/^\.?\//, "");
+  if (normalized.toLowerCase().startsWith("uploads/")) {
+    return encodeURI(`${UPLOADS_ORIGIN}/${normalized}`);
+  }
   return encodeURI(`${API_ORIGIN}/${normalized}`);
 }
 
