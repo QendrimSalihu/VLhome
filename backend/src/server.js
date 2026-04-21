@@ -6,6 +6,7 @@ import { getResolvedUploadsPath } from "./storage/uploadsPath.js";
 import { optimizeExistingUploads } from "./utils/optimizeExistingUploads.js";
 import { migrateLegacyUploadsToWebp } from "./utils/migrateLegacyUploadsToWebp.js";
 import { repairMissingImagePaths } from "./utils/repairMissingImagePaths.js";
+import { restoreMissingUploadsFromBundled } from "./utils/restoreMissingUploadsFromBundled.js";
 import { startDailyBackupScheduler } from "./utils/autoBackup.js";
 
 async function start() {
@@ -36,6 +37,17 @@ async function start() {
     }
   } catch (error) {
     console.warn("Upload optimization skipped due to error:", error?.message || error);
+  }
+
+  try {
+    const restored = await restoreMissingUploadsFromBundled();
+    if (restored?.skipped) {
+      console.log(`Bundled upload restore skipped (${restored.reason}).`);
+    } else {
+      console.log(`Bundled upload restore done: checked=${restored.checked}, restored=${restored.restored}`);
+    }
+  } catch (error) {
+    console.warn("Bundled upload restore skipped due to error:", error?.message || error);
   }
 
   try {
