@@ -1,6 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
+import sqlite3 from "sqlite3";
+import { open } from "sqlite";
 import { getResolvedDbPath } from "../database/connection.js";
 import { getResolvedUploadsPath } from "../storage/uploadsPath.js";
 
@@ -20,8 +22,33 @@ function safeReason(reason = "auto") {
   return String(reason || "auto").replace(/[^a-zA-Z0-9_-]/g, "_");
 }
 
-export function createDatabaseBackup(reason = "auto-change") {
+function toSqliteLiteral(value) {
+  return String(value).replace(/'/g, "''");
+}
+
+async function createConsistentSqliteSnapshot(sourceDbPath, targetDbPath) {
+  if (!fs.existsSync(sourceDbPath)) {
+    throw new Error(`DB file not found: ${sourceDbPath}`);
+  }
+  if (fs.existsSync(targetDbPath)) {
+    fs.unlinkSync(targetDbPath);
+  }
+
+  const db = await open({
+    filename: sourceDbPath,
+    driver: sqlite3.Database
+  });
+
   try {
+    const targetLiteral = toSqliteLiteral(targetDbPath);
+    await db.exec(`VACUUM INTO '${targetLiteral}'`);
+  } finally {
+    await db.close();
+  }
+}
+
+export function createDatabaseBackup(reason = "auto-change") {
+  void (async () => {
     const dbFile = getResolvedDbPath();
     const dbDir = path.dirname(dbFile);
     const backupDir = path.resolve(dbDir, "backups");
@@ -30,21 +57,10 @@ export function createDatabaseBackup(reason = "auto-change") {
     const ts = stamp();
     const baseName = `vlera-${ts}-${reason.replace(/[^a-zA-Z0-9_-]/g, "_")}`;
     const dbTarget = path.join(backupDir, `${baseName}.sqlite`);
-
-    if (fs.existsSync(dbFile)) {
-      fs.copyFileSync(dbFile, dbTarget);
-    }
-    const walFile = `${dbFile}-wal`;
-    if (fs.existsSync(walFile)) {
-      fs.copyFileSync(walFile, `${dbTarget}-wal`);
-    }
-    const shmFile = `${dbFile}-shm`;
-    if (fs.existsSync(shmFile)) {
-      fs.copyFileSync(shmFile, `${dbTarget}-shm`);
-    }
-  } catch (error) {
-    console.error("Auto-backup failed:", error.message);
-  }
+    await createConsistentSqliteSnapshot(dbFile, dbTarget);
+  })().catch((error) => {
+    console.error("Auto-backup failed:", error?.message || error);
+  });
 }
 
 function archiveUploads(uploadsDir, archivePath) {
@@ -61,7 +77,7 @@ function writeManifest(filePath, payload) {
   fs.writeFileSync(filePath, JSON.stringify(payload, null, 2), "utf8");
 }
 
-export function createFullProjectBackup(reason = "manual") {
+export async function createFullProjectBackup(reason = "manual") {
   const dbFile = getResolvedDbPath();
   const uploadsDir = getResolvedUploadsPath();
   const backupDir = path.resolve(path.dirname(dbFile), "backups");
@@ -77,16 +93,7 @@ export function createFullProjectBackup(reason = "manual") {
   const uploadsTarget = path.join(backupDir, uploadsBaseName);
   const manifestTarget = path.join(backupDir, manifestBaseName);
 
-  if (fs.existsSync(dbFile)) {
-    fs.copyFileSync(dbFile, dbTarget);
-  } else {
-    throw new Error(`DB file not found: ${dbFile}`);
-  }
-
-  const walFile = `${dbFile}-wal`;
-  const shmFile = `${dbFile}-shm`;
-  if (fs.existsSync(walFile)) fs.copyFileSync(walFile, `${dbTarget}-wal`);
-  if (fs.existsSync(shmFile)) fs.copyFileSync(shmFile, `${dbTarget}-shm`);
+  await createConsistentSqliteSnapshot(dbFile, dbTarget);
 
   archiveUploads(uploadsDir, uploadsTarget);
 
@@ -129,10 +136,10 @@ export function startDailyBackupScheduler({
   keepDays = 30,
   intervalMs = 24 * 60 * 60 * 1000
 } = {}) {
-  const run = () => {
+  const run = async () => {
     let backupDir = "";
     try {
-      const result = createFullProjectBackup("daily_auto");
+      const result = await createFullProjectBackup("daily_auto");
       backupDir = path.dirname(result.dbTarget);
     } catch (error) {
       console.warn("Daily full backup failed:", error.message);
@@ -147,8 +154,10 @@ export function startDailyBackupScheduler({
     }
   };
 
-  run();
-  const timer = setInterval(run, intervalMs);
+  void run();
+  const timer = setInterval(() => {
+    void run();
+  }, intervalMs);
   timer.unref?.();
   return timer;
 }
