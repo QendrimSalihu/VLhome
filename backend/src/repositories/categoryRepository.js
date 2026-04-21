@@ -125,8 +125,11 @@ export const categoryRepository = {
       throw badRequest("Kategoria arkive nuk mund te fshihet.");
     }
 
-    await db.exec("BEGIN");
+    let transactionStarted = false;
     try {
+      await db.exec("BEGIN");
+      transactionStarted = true;
+
       let archive = await db.get("SELECT id FROM categories WHERE name = ?", [ARCHIVE_CATEGORY_NAME]);
       if (!archive) {
         const inserted = await db.run(
@@ -150,8 +153,15 @@ export const categoryRepository = {
       }
 
       await db.exec("COMMIT");
+      transactionStarted = false;
     } catch (error) {
-      await db.exec("ROLLBACK");
+      if (transactionStarted) {
+        try {
+          await db.exec("ROLLBACK");
+        } catch {
+          // Preserve the original failure reason if transaction already ended.
+        }
+      }
       throw error;
     }
     return { id: categoryId, deleted: true };
