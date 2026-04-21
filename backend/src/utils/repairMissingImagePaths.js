@@ -46,10 +46,17 @@ function resolveUploadPath(rawPath, availableFiles) {
 
   const ext = path.extname(fileName).toLowerCase();
   const base = ext ? fileName.slice(0, -ext.length) : fileName;
-  for (const candidateExt of KNOWN_EXTS) {
-    const candidate = `${base}${candidateExt}`;
-    if (availableFiles.has(candidate)) return toUploadsWebPath(candidate);
+  const altBases = [base];
+  if (!base.endsWith("-opt")) altBases.push(`${base}-opt`);
+  if (base.endsWith("-opt")) altBases.push(base.slice(0, -4));
+
+  for (const candidateBase of altBases) {
+    for (const candidateExt of KNOWN_EXTS) {
+      const candidate = `${candidateBase}${candidateExt}`;
+      if (availableFiles.has(candidate)) return toUploadsWebPath(candidate);
+    }
   }
+
   return "";
 }
 
