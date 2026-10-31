@@ -198,9 +198,8 @@ export async function initDatabase() {
 
   const defaultZones = [
     { name: "Maqedoni", slug: "macedonia", fee: 2.44, currency_symbol: "EUR", sort_order: 1 },
-    { name: "Kosove", slug: "kosove", fee: 5, currency_symbol: "EUR", sort_order: 2 },
-    { name: "Shqiperi", slug: "shqiperi", fee: 7, currency_symbol: "EUR", sort_order: 3 },
-    { name: "Bujanoc", slug: "bujanovac", fee: 5, currency_symbol: "EUR", sort_order: 4 }
+    { name: "Kosove", slug: "kosove", fee: 5.5, currency_symbol: "EUR", sort_order: 2 },
+    { name: "Shqiperi", slug: "shqiperi", fee: 8, currency_symbol: "EUR", sort_order: 3 }
   ];
   for (const zone of defaultZones) {
     await db.run(
@@ -211,11 +210,10 @@ export async function initDatabase() {
   }
 
   await db.run("DELETE FROM delivery_zones WHERE slug = 'maqedoni'");
-  await db.run("DELETE FROM delivery_zones WHERE slug = 'bujanoc'");
   await db.run("UPDATE delivery_zones SET name = 'Maqedoni', currency_symbol = 'EUR' WHERE slug = 'macedonia'");
-  await db.run("UPDATE delivery_zones SET name = 'Bujanoc', currency_symbol = 'EUR' WHERE slug = 'bujanovac'");
-  await db.run("UPDATE delivery_zones SET fee = 5, currency_symbol = 'EUR' WHERE slug = 'kosove'");
-  await db.run("UPDATE delivery_zones SET fee = 7, currency_symbol = 'EUR' WHERE slug = 'shqiperi'");
+  await db.run("UPDATE delivery_zones SET is_active = 0 WHERE slug IN ('bujanoc', 'bujanovac')");
+  await db.run("UPDATE delivery_zones SET fee = 5.5, currency_symbol = 'EUR' WHERE slug = 'kosove'");
+  await db.run("UPDATE delivery_zones SET fee = 8, currency_symbol = 'EUR' WHERE slug = 'shqiperi'");
   await db.run("UPDATE delivery_zones SET currency_symbol = 'EUR' WHERE currency_symbol <> 'EUR'");
 
   const defaultSettings = [
