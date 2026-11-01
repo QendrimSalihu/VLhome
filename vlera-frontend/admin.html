@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <title>Admin | VLERA</title>
   <link rel="stylesheet" href="./assets/css/style.css?v=20260420-zoomfix-5">
+  <link rel="stylesheet" href="./assets/css/admin.css?v=20261101-1">
 </head>
 <body class="admin-body">
   <section id="admin-auth-screen" class="admin-auth-screen">
@@ -32,7 +33,12 @@
 
   <div id="admin-shell" class="admin-shell admin-shell--locked">
     <aside class="admin-side">
-      <h2>VLERA Admin</h2>
+      <div class="admin-brand" aria-label="VLERA Admin">
+        <span class="admin-brand-mark" aria-hidden="true">V</span>
+        <span class="admin-brand-name"><strong>VLERA</strong><small>ADMIN PANEL</small></span>
+      </div>
+      <p class="admin-side-label">MENAXHIMI</p>
+      <nav class="admin-nav" aria-label="Menuja e adminit">
       <a class="active" href="#dashboard" data-admin-nav="dashboard">Dashboard</a>
       <a href="#slides" data-admin-nav="slides">Slider</a>
       <a href="#categories" data-admin-nav="categories">Kategorite</a>
@@ -45,13 +51,14 @@
       <a href="#actions" data-admin-nav="actions">Veprime</a>
       <a href="index.html">Hap Website</a>
       <a href="#" id="admin-logout-link">Dil</a>
+      </nav>
     </aside>
     <main class="admin-main">
       <section class="admin-page active" data-admin-page="dashboard" id="dashboard">
-        <div class="admin-top">
-          <strong>Paneli i Menaxhimit</strong>
+        <header class="admin-page-heading">
+          <div><span class="admin-eyebrow">PËRMBLEDHJE</span><h1>Dashboard</h1><p>Gjendja e dyqanit në një vend.</p></div>
           <a class="btn btn-primary" href="shop.html">Shiko Shop</a>
-        </div>
+        </header>
         <section class="kpi">
           <article class="card"><div>Produkte</div><h3 id="kpi-products">0</h3></article>
           <article class="card"><div>Kategori</div><h3 id="kpi-categories">0</h3></article>
@@ -62,6 +69,7 @@
       </section>
 
       <section class="admin-page" data-admin-page="slides" id="slides">
+        <header class="admin-page-heading"><div><span class="admin-eyebrow">PAMJA E FAQES</span><h1>Slider</h1><p>Menaxho fotografitë e kryefaqes.</p></div></header>
         <section class="panel">
           <h3 style="margin-top:0">Home Slider (shto sa foto te duash)</h3>
           <form id="admin-slide-form">
@@ -78,15 +86,16 @@
 
         <section style="margin-top:14px" class="panel">
           <h3 style="margin-top:0">Slides e shtuara</h3>
-          <table class="table">
+          <div class="admin-table-scroll"><table class="table">
             <thead><tr><th>ID</th><th>Foto</th><th>Caption</th><th>Veprim</th></tr></thead>
             <tbody id="admin-slides-body"></tbody>
-          </table>
+          </table></div>
           <div class="load-more-wrap"><button id="slides-more-admin" class="btn load-more-btn hidden" type="button">Shfaq me shume</button></div>
         </section>
       </section>
 
       <section class="admin-page" data-admin-page="categories" id="categories">
+        <header class="admin-page-heading"><div><span class="admin-eyebrow">KATALOGU</span><h1>Kategoritë</h1><p>Organizo kategoritë dhe zonat e dërgesës.</p></div></header>
         <section class="panel">
           <h3 style="margin-top:0">Add Category (me foto)</h3>
           <form id="admin-category-form">
@@ -121,24 +130,25 @@
 
         <section style="margin-top:14px" class="panel">
           <h3 style="margin-top:0">Kategorite e shtuara</h3>
-          <table class="table">
+          <div class="admin-table-scroll"><table class="table">
             <thead><tr><th>ID</th><th>Foto</th><th>Emri</th><th>Pershkrim</th><th>Veprim</th></tr></thead>
             <tbody id="admin-categories-body"></tbody>
-          </table>
+          </table></div>
           <div class="load-more-wrap"><button id="categories-more-admin" class="btn load-more-btn hidden" type="button">Shfaq me shume</button></div>
         </section>
 
         <section style="margin-top:14px" class="panel">
           <h3 style="margin-top:0">Zonat e dergeses (nga databaza)</h3>
-          <table class="table">
+          <div class="admin-table-scroll"><table class="table">
             <thead><tr><th>ID</th><th>Zona</th><th>Posta</th></tr></thead>
             <tbody id="admin-zones-body"></tbody>
-          </table>
+          </table></div>
           <div class="load-more-wrap"><button id="zones-more-admin" class="btn load-more-btn hidden" type="button">Shfaq me shume</button></div>
         </section>
       </section>
 
       <section class="admin-page" data-admin-page="products" id="products">
+        <header class="admin-page-heading"><div><span class="admin-eyebrow">KATALOGU</span><h1>Produktet</h1><p>Shto dhe përditëso produktet e dyqanit.</p></div></header>
         <section class="panel admin-product-panel">
           <h3 style="margin-top:0">Add Product</h3>
           <p class="admin-product-lead">Shto produkt me foto te qarte dhe cmim te sakte per publikim profesional.</p>
@@ -185,10 +195,10 @@
 
         <section style="margin-top:14px" class="panel">
           <h3 style="margin-top:0">Produktet e shtuara</h3>
-          <table class="table">
+          <div class="admin-table-scroll"><table class="table">
             <thead><tr><th>ID</th><th>Foto</th><th>Titulli</th><th>Kategoria</th><th>Cmimi</th><th>Stock</th><th>Tags</th><th>Veprim</th></tr></thead>
             <tbody id="admin-products-body"></tbody>
-          </table>
+          </table></div>
           <div class="admin-list-controls">
             <span id="products-page-info" class="badge">Faqe 1 / 1</span>
             <button id="products-more" class="btn load-more-btn hidden" type="button">Shfaq me shume</button>
@@ -197,6 +207,7 @@
       </section>
 
       <section class="admin-page" data-admin-page="orders" id="orders">
+        <header class="admin-page-heading"><div><span class="admin-eyebrow">SHITJET</span><h1>Porositë</h1><p>Ndiq porositë, statuset dhe qarkullimin.</p></div></header>
         <section class="panel">
           <h3 style="margin-top:0">Porosite e klienteve</h3>
           <section class="kpi" style="margin:12px 0 14px">
@@ -213,10 +224,10 @@
               <option value="E Anuluar">E Anuluar</option>
             </select>
           </div>
-          <table class="table">
+          <div class="admin-table-scroll"><table class="table">
             <thead><tr><th>Nr</th><th>Data</th><th>Klienti</th><th>Tel</th><th>Produktet</th><th>Fotot</th><th>Qyteti</th><th>Zona</th><th>Posta</th><th>Totali</th><th>Statusi</th></tr></thead>
             <tbody id="admin-orders-body"></tbody>
-          </table>
+          </table></div>
           <div class="admin-list-controls">
             <span id="orders-page-info" class="badge">Faqe 1 / 1</span>
             <button id="orders-more" class="btn load-more-btn hidden" type="button">Shfaq me shume</button>
@@ -225,17 +236,19 @@
       </section>
 
       <section class="admin-page" data-admin-page="customers" id="customers">
+        <header class="admin-page-heading"><div><span class="admin-eyebrow">MARRËDHËNIET</span><h1>Klientët</h1><p>Shiko të dhënat e klientëve dhe porositë e tyre.</p></div></header>
         <section class="panel">
           <h3 style="margin-top:0">Klientet</h3>
-          <table class="table">
+          <div class="admin-table-scroll"><table class="table">
             <thead><tr><th>ID</th><th>Emri</th><th>Tel</th><th>Qyteti</th><th>Adresa</th><th>Porosi</th><th>Veprime</th></tr></thead>
             <tbody id="admin-customers-body"></tbody>
-          </table>
+          </table></div>
           <div class="load-more-wrap"><button id="customers-more-admin" class="btn load-more-btn hidden" type="button">Shfaq me shume</button></div>
         </section>
       </section>
 
       <section class="admin-page" data-admin-page="analytics" id="analytics">
+        <header class="admin-page-heading"><div><span class="admin-eyebrow">PERFORMANCA</span><h1>Analitika</h1><p>Shiko vizitat dhe interesimin për Instagramin.</p></div></header>
         <div class="admin-top">
           <strong>Analitika e faqes</strong>
           <label for="analytics-period">Periudha
@@ -255,25 +268,27 @@
         <p style="font-size:13px;line-height:1.5;color:#52666a;margin:12px 0 20px">* Vizitorët unikë janë një vlerësim sipas shfletuesit. Klikimi në Instagram nuk tregon nëse është dërguar mesazh. Statistikat nisin nga dita e aktivizimit.</p>
         <section class="panel">
           <h3 style="margin-top:0">Faqet më të vizituara</h3>
-          <table class="table">
+          <div class="admin-table-scroll"><table class="table">
             <thead><tr><th>Faqja</th><th>Hapje</th></tr></thead>
             <tbody id="analytics-pages-body"><tr><td colspan="2">Duke ngarkuar...</td></tr></tbody>
-          </table>
+          </table></div>
         </section>
       </section>
 
       <section class="admin-page" data-admin-page="whatsapp-messages" id="whatsapp-messages">
+        <header class="admin-page-heading"><div><span class="admin-eyebrow">KOMUNIKIMI</span><h1>WhatsApp Messages</h1><p>Shiko mesazhet e pranuara nga WhatsApp.</p></div></header>
         <section class="panel">
           <h3 style="margin-top:0">WhatsApp Messages</h3>
-          <table class="table">
+          <div class="admin-table-scroll"><table class="table">
             <thead><tr><th>ID</th><th>Emri</th><th>Tel</th><th>Mesazhi</th><th>Faqja</th><th>Data</th><th>Veprim</th></tr></thead>
             <tbody id="admin-whatsapp-body"></tbody>
-          </table>
+          </table></div>
           <div class="load-more-wrap"><button id="whatsapp-more-admin" class="btn load-more-btn hidden" type="button">Shfaq me shume</button></div>
         </section>
       </section>
 
       <section class="admin-page" data-admin-page="settings" id="settings">
+        <header class="admin-page-heading"><div><span class="admin-eyebrow">KONFIGURIMI</span><h1>Business Settings</h1><p>Përditëso informacionin e dyqanit.</p></div></header>
         <section class="panel">
           <h3 style="margin-top:0">Business Settings</h3>
           <form id="admin-settings-form">
@@ -290,6 +305,7 @@
       </section>
 
       <section class="admin-page" data-admin-page="actions" id="actions">
+        <header class="admin-page-heading"><div><span class="admin-eyebrow">MIRËMBAJTJA</span><h1>Veprime</h1><p>Menaxho veprimet e sistemit me kujdes.</p></div></header>
         <section class="panel">
           <h3 style="margin-top:0">Pastrime te shpejta</h3>
           <div class="admin-actions-row">
