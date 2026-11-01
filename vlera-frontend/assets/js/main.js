@@ -13,6 +13,7 @@ const API_BASE = `${API_ORIGIN}/api`;
 const CART_KEY = "vlera_cart_tmp";
 const CART_BACKUP_KEY = "vlera_cart_tmp_backup";
 const WISHLIST_KEY = "vlera_wishlist_tmp";
+const ANALYTICS_VISITOR_KEY = "vlera_analytics_visitor";
 const PLACEHOLDER_PRODUCT = "./assets/placeholders/product.svg";
 const PLACEHOLDER_CATEGORY = "./assets/placeholders/category.svg";
 const LANG_KEY = "vlera_lang";
@@ -1073,6 +1074,49 @@ async function api(path, options = {}, retried = false) {
     throw new Error(payload?.message || fallback);
   }
   return payload.data;
+}
+
+function analyticsVisitorId() {
+  try {
+    let id = localStorage.getItem(ANALYTICS_VISITOR_KEY) || "";
+    if (!/^[a-f0-9]{32}$/.test(id)) {
+      const bytes = new Uint8Array(16);
+      crypto.getRandomValues(bytes);
+      id = Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+      localStorage.setItem(ANALYTICS_VISITOR_KEY, id);
+    }
+    return id;
+  } catch {
+    return "";
+  }
+}
+
+function sendAnalyticsEvent(eventType, pagePath) {
+  const body = JSON.stringify({
+    event_type: eventType,
+    page_path: pagePath,
+    visitor_id: analyticsVisitorId()
+  });
+  const url = `${API_BASE}/site-analytics/events`;
+  try {
+    if (navigator.sendBeacon?.(url, new Blob([body], { type: "application/json" }))) return;
+  } catch {
+    // Use fetch when sendBeacon is unavailable.
+  }
+  fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body, keepalive: true }).catch(() => {});
+}
+
+function bootSiteAnalytics() {
+  if (isAdminPage()) return;
+  const page = (window.location.pathname.split("/").pop() || "index.html").toLowerCase();
+  if (page === "404.html" || !/^[a-z0-9-]+\.html$/.test(page)) return;
+  const pagePath = `/${page}`;
+  sendAnalyticsEvent("page_view", pagePath);
+  if (pagePath === "/contact.html") {
+    document.querySelector("#contact-instagram-cta")?.addEventListener("click", () => {
+      sendAnalyticsEvent("instagram_click", pagePath);
+    });
+  }
 }
 
 async function apiUploadImage(file) {
@@ -2508,6 +2552,40 @@ async function loadAdminContactMessages({ append = false } = {}) {
   state.contactPagination = pagination;
 }
 
+async function loadAdminAnalytics() {
+  const period = document.querySelector("#analytics-period")?.value || "30d";
+  if (!document.querySelector("#analytics-pages-body")) return;
+  try {
+    const data = await api(`/site-analytics/summary?period=${encodeURIComponent(period)}`);
+    const totals = data?.totals || {};
+    const number = (value) => Number(value || 0).toLocaleString("sq-AL");
+    const fields = {
+      "#analytics-page-views": totals.page_views,
+      "#analytics-unique-visitors": totals.unique_visitors,
+      "#analytics-contact-views": totals.contact_views,
+      "#analytics-instagram-clicks": totals.instagram_clicks
+    };
+    for (const [selector, value] of Object.entries(fields)) {
+      const element = document.querySelector(selector);
+      if (element) element.textContent = number(value);
+    }
+    const pageNames = {
+      "index.html": "Kryefaqja", "shop.html": "Dyqani", "categories.html": "Kategoritë",
+      "contact.html": "Contact", "about.html": "Rreth nesh", "offers.html": "Ofertat"
+    };
+    const pages = Array.isArray(data?.pages) ? data.pages : [];
+    document.querySelector("#analytics-pages-body").innerHTML = pages.length
+      ? pages.map((item) => {
+          const file = String(item.page_path || "").replace(/^\//, "");
+          return `<tr><td>${escapeHtml(pageNames[file] || file)}</td><td>${number(item.views)}</td></tr>`;
+        }).join("")
+      : `<tr><td colspan="2">Ende nuk ka vizita të regjistruara.</td></tr>`;
+  } catch (error) {
+    console.error("Analytics unavailable:", error);
+    document.querySelector("#analytics-pages-body").innerHTML = `<tr><td colspan="2">Statistikat nuk janë të disponueshme për momentin.</td></tr>`;
+  }
+}
+
 async function loadAdminWhatsAppMessages({ append = false } = {}) {
   const hasWhatsAppUI = document.querySelector("#admin-whatsapp-body");
   if (!hasWhatsAppUI) return;
@@ -2602,7 +2680,7 @@ async function loadCoreData() {
       tasks.push(loadWishlistProducts());
     }
     if (adminMode) {
-      tasks.push(loadAdminProducts(), loadAdminOrders(), loadAdminCustomers(), loadAdminContactMessages(), loadAdminWhatsAppMessages());
+      tasks.push(loadAdminProducts(), loadAdminOrders(), loadAdminCustomers(), loadAdminAnalytics(), loadAdminWhatsAppMessages());
     }
     await Promise.all(tasks);
 
@@ -3432,6 +3510,7 @@ async function bootAdmin() {
     };
   }
   bootAdminNavigation();
+  document.querySelector("#analytics-period")?.addEventListener("change", loadAdminAnalytics);
   const ordersSearch = document.querySelector("#admin-orders-search");
   const ordersStatus = document.querySelector("#admin-orders-status");
   const ordersMore = document.querySelector("#orders-more");
@@ -4072,6 +4151,7 @@ function rerenderAll() {
 
 document.addEventListener("DOMContentLoaded", async () => {
   if (isAdminPage()) setAdminUiLocked(true);
+  bootSiteAnalytics();
   relocateHeaderSearchForms();
   window.addEventListener("resize", relocateHeaderSearchForms);
   setLang(getLang());

@@ -111,6 +111,14 @@ export async function initDatabase() {
       created_at TEXT DEFAULT CURRENT_TIMESTAMP
     );
 
+    CREATE TABLE IF NOT EXISTS site_analytics_events (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      event_type TEXT NOT NULL CHECK (event_type IN ('page_view', 'instagram_click')),
+      page_path TEXT NOT NULL,
+      visitor_id TEXT NOT NULL DEFAULT '',
+      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    );
+
     CREATE TABLE IF NOT EXISTS app_settings (
       key TEXT PRIMARY KEY,
       value TEXT NOT NULL
@@ -171,6 +179,8 @@ export async function initDatabase() {
 
     CREATE INDEX IF NOT EXISTS idx_contact_messages_created_id ON contact_messages(created_at DESC, id DESC);
     CREATE INDEX IF NOT EXISTS idx_whatsapp_messages_created_id ON whatsapp_messages(created_at DESC, id DESC);
+    CREATE INDEX IF NOT EXISTS idx_site_analytics_created_type ON site_analytics_events(created_at DESC, event_type);
+    CREATE INDEX IF NOT EXISTS idx_site_analytics_page_created ON site_analytics_events(page_path, created_at DESC);
     CREATE INDEX IF NOT EXISTS idx_slider_images_created_id ON slider_images(created_at DESC, id DESC);
     CREATE INDEX IF NOT EXISTS idx_delivery_zones_sort_order ON delivery_zones(sort_order, id ASC);
   `);
