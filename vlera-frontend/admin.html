@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <title>Admin | VLERA</title>
   <link rel="stylesheet" href="./assets/css/style.css?v=20260420-zoomfix-5">
-  <link rel="stylesheet" href="./assets/css/admin.css?v=20261101-1">
+  <link rel="stylesheet" href="./assets/css/admin.css?v=20261103-1">
 </head>
 <body class="admin-body">
   <section id="admin-auth-screen" class="admin-auth-screen">
@@ -45,7 +45,7 @@
       <a href="#products" data-admin-nav="products">Produktet</a>
       <a href="#orders" data-admin-nav="orders">Porosite</a>
       <a href="#customers" data-admin-nav="customers">Klientet</a>
-      <a href="#analytics" data-admin-nav="analytics">Analitika</a>
+      <a href="#analytics" data-admin-nav="analytics">Statistikat</a>
       <a href="#whatsapp-messages" data-admin-nav="whatsapp-messages">WhatsApp Messages</a>
       <a href="#settings" data-admin-nav="settings">Business Settings</a>
       <a href="#actions" data-admin-nav="actions">Veprime</a>
@@ -248,10 +248,10 @@
       </section>
 
       <section class="admin-page" data-admin-page="analytics" id="analytics">
-        <header class="admin-page-heading"><div><span class="admin-eyebrow">PERFORMANCA</span><h1>Analitika</h1><p>Shiko vizitat dhe interesimin për Instagramin.</p></div></header>
+        <header class="admin-page-heading"><div><span class="admin-eyebrow">VIZITAT</span><h1>Statistikat e faqes</h1><p>Këtu sheh sa njerëz kanë hyrë në faqe dhe çfarë kanë hapur.</p></div></header>
         <div class="admin-top">
-          <strong>Analitika e faqes</strong>
-          <label for="analytics-period">Periudha
+          <strong>Çfarë ka ndodhur në faqe</strong>
+          <label for="analytics-period">Shiko për
             <select id="analytics-period">
               <option value="7d">7 ditët e fundit</option>
               <option value="30d" selected>30 ditët e fundit</option>
@@ -260,16 +260,16 @@
           </label>
         </div>
         <section class="kpi" aria-label="Statistikat e faqes">
-          <article class="card"><div>Hapje të faqeve</div><h3 id="analytics-page-views">—</h3></article>
-          <article class="card"><div>Vizitorë unikë*</div><h3 id="analytics-unique-visitors">—</h3></article>
-          <article class="card"><div>Hapje të Contact</div><h3 id="analytics-contact-views">—</h3></article>
-          <article class="card"><div>Klikime në Instagram</div><h3 id="analytics-instagram-clicks">—</h3></article>
+          <article class="card"><div>Hapje të faqeve</div><h3 id="analytics-page-views">—</h3><p class="analytics-help">Sa herë u hapën faqet gjithsej. Një person mund të hapë disa faqe.</p></article>
+          <article class="card"><div>Vizitorë të ndryshëm</div><h3 id="analytics-unique-visitors">—</h3><p class="analytics-help">Përafërsisht sa shfletues të ndryshëm kanë hyrë.</p></article>
+          <article class="card"><div>Hapje të Kontaktit</div><h3 id="analytics-contact-views">—</h3><p class="analytics-help">Sa herë u hap faqja Kontakt.</p></article>
+          <article class="card"><div>Klikime në Instagram</div><h3 id="analytics-instagram-clicks">—</h3><p class="analytics-help">Sa herë u klikua butoni i Instagramit te Kontakt.</p></article>
         </section>
-        <p style="font-size:13px;line-height:1.5;color:#52666a;margin:12px 0 20px">* Vizitorët unikë janë një vlerësim sipas shfletuesit. Klikimi në Instagram nuk tregon nëse është dërguar mesazh. Statistikat nisin nga dita e aktivizimit.</p>
+        <p class="analytics-note">Klikimi në Instagram nuk tregon nëse personi ka dërguar mesazh. Këta numra regjistrohen vetëm nga dita kur u aktivizuan statistikat.</p>
         <section class="panel">
-          <h3 style="margin-top:0">Faqet më të vizituara</h3>
+          <h3 style="margin-top:0">Faqet që u hapën më shumë</h3>
           <div class="admin-table-scroll"><table class="table">
-            <thead><tr><th>Faqja</th><th>Hapje</th></tr></thead>
+            <thead><tr><th>Faqja</th><th>Sa herë u hap</th></tr></thead>
             <tbody id="analytics-pages-body"><tr><td colspan="2">Duke ngarkuar...</td></tr></tbody>
           </table></div>
         </section>
@@ -316,7 +316,7 @@
       </section>
     </main>
   </div>
-  <script src="./assets/js/main.js?v=20261101-analytics"></script>
+  <script src="./assets/js/main.js?v=20261103-analytics-text"></script>
 </body>
 </html>
 

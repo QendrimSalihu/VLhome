@@ -2571,7 +2571,7 @@ async function loadAdminAnalytics() {
     }
     const pageNames = {
       "index.html": "Kryefaqja", "shop.html": "Dyqani", "categories.html": "Kategoritë",
-      "contact.html": "Contact", "about.html": "Rreth nesh", "offers.html": "Ofertat"
+      "contact.html": "Kontakt", "about.html": "Rreth nesh", "offers.html": "Ofertat"
     };
     const pages = Array.isArray(data?.pages) ? data.pages : [];
     document.querySelector("#analytics-pages-body").innerHTML = pages.length

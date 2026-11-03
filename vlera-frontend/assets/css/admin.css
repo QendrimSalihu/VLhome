@@ -150,6 +150,8 @@
 }
 .admin-body .kpi .card div { color: var(--admin-muted); font-size: 12px; font-weight: 700; letter-spacing: .02em; }
 .admin-body .kpi .card h3 { margin: 14px 0 0; color: #174b42; font-size: 29px; line-height: 1.1; font-weight: 800; }
+.admin-body #analytics .analytics-help { margin: 10px 0 0; color: var(--admin-muted); font-size: 12px; line-height: 1.45; }
+.admin-body #analytics .analytics-note { margin: 12px 0 20px; color: #52666a; font-size: 13px; line-height: 1.5; }
 
 .admin-body .admin-main .filters { gap: 12px; }
 .admin-body .admin-main input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
