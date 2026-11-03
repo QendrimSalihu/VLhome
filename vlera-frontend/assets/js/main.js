@@ -1270,6 +1270,16 @@ function syncCartCount() {
   });
 }
 
+function animateCartIcon() {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  document.querySelectorAll(".cart-btn").forEach((button) => {
+    button.classList.remove("cart-btn-added");
+    void button.offsetWidth;
+    button.classList.add("cart-btn-added");
+    window.setTimeout(() => button.classList.remove("cart-btn-added"), 650);
+  });
+}
+
 let cartDrawerReturnFocus = null;
 
 function bootCartDrawer() {
@@ -1410,8 +1420,8 @@ function addToCart(product) {
   }
   else cart.push({ ...product, qty: 1, selected: true });
   setCart(cart);
-  if (document.querySelector("#vlera-cart-drawer")) openCartDrawer();
-  else showInlineToast(t("added_to_cart"), "success");
+  animateCartIcon();
+  showInlineToast(t("added_to_cart"), "success");
 }
 
 function removeFromCart(id) {
@@ -1857,11 +1867,6 @@ function renderHomeCategories() {
   } else {
     wrap.innerHTML = `<div class="panel"><p class="lead" style="text-align:left;margin:0">${t("empty_categories")}</p></div>`;
   }
-  const btn = document.querySelector("#home-categories-more");
-  if (btn) {
-    btn.classList.add("hidden");
-    btn.disabled = true;
-  }
 }
 
 function setupHomeCategoriesCarousel(scope) {
@@ -1894,26 +1899,7 @@ function renderCategoriesPage() {
   const wrap = document.querySelector("#categories-grid");
   if (!wrap) return;
   const list = [...state.categories];
-  const isMobile = window.matchMedia("(max-width: 760px)").matches;
-  const visible = isMobile ? Math.min(state.categoriesPageVisible, list.length) : list.length;
-  wrap.innerHTML = visible ? list.slice(0, visible).map(categoryCard).join("") : `<div class="panel"><p class="lead" style="text-align:left;margin:0">${t("empty_categories")}</p></div>`;
-  const btn = document.querySelector("#categories-more");
-  if (btn) {
-    if (!isMobile) {
-      btn.classList.add("hidden");
-      btn.disabled = true;
-      return;
-    }
-    const remain = Math.max(0, list.length - visible);
-    if (remain > 0) {
-      btn.textContent = getLang() === "mk" ? `Prikazhi poveke (${remain})` : `Me shume produkte (${remain})`;
-      btn.classList.remove("hidden");
-      btn.disabled = false;
-    } else {
-      btn.classList.add("hidden");
-      btn.disabled = true;
-    }
-  }
+  wrap.innerHTML = list.length ? list.map(categoryCard).join("") : `<div class="panel"><p class="lead" style="text-align:left;margin:0">${t("empty_categories")}</p></div>`;
 }
 
 function renderHomeProducts() {
@@ -1922,18 +1908,7 @@ function renderHomeProducts() {
   const list = [...state.homeProducts];
   const visible = list.length;
   wrap.innerHTML = visible ? list.map(productCard).join("") : `<div class="panel"><p class="lead" style="text-align:left;margin:0">${t("empty_products_admin")}</p></div>`;
-  const btn = document.querySelector("#home-products-more");
-  if (btn) {
-    const remain = Math.max(0, Number(state.homePagination.total || 0) - visible);
-    if (state.homePagination.page < state.homePagination.totalPages && remain > 0) {
-      btn.textContent = getLang() === "mk" ? `Prikazi povekje (${remain})` : `Me shume produkte (${remain})`;
-      btn.classList.remove("hidden");
-      btn.disabled = false;
-    } else {
-      btn.classList.add("hidden");
-      btn.disabled = true;
-    }
-  }
+  syncAutoProductPagination("home-products");
   bindAddButtons();
   bindWishButtons();
 }
@@ -2047,22 +2022,10 @@ function renderShopProducts() {
   const wrap = document.querySelector("#shop-products");
   if (!wrap) return;
   const items = [...state.shopProducts];
-  const visible = items.length;
   wrap.innerHTML = items.length
     ? items.map(productCard).join("")
     : `<div class="panel"><p class="lead" style="text-align:left;margin:0">${getLang() === "mk" ? "Ne e pronajden nitu eden proizvod." : "Nuk u gjet asnje produkt."}</p></div>`;
-  const btn = document.querySelector("#shop-products-more");
-  if (btn) {
-    const remain = Math.max(0, Number(state.shopPagination.total || 0) - visible);
-    if (state.shopPagination.page < state.shopPagination.totalPages && remain > 0) {
-      btn.textContent = getLang() === "mk" ? `Prikazi povekje (${remain})` : `Me shume produkte (${remain})`;
-      btn.classList.remove("hidden");
-      btn.disabled = false;
-    } else {
-      btn.classList.add("hidden");
-      btn.disabled = true;
-    }
-  }
+  syncAutoProductPagination("shop-products");
   bindAddButtons();
   bindWishButtons();
 }
@@ -2071,22 +2034,10 @@ function renderOffersProducts() {
   const wrap = document.querySelector("#offers-products");
   if (!wrap) return;
   const items = [...state.offersProducts];
-  const visible = items.length;
   wrap.innerHTML = items.length
     ? items.map(productCard).join("")
     : `<div class="panel"><p class="lead" style="text-align:left;margin:0">${getLang() === "mk" ? "Nema aktivni popusti." : "Nuk ka oferta aktive momentalisht."}</p></div>`;
-  const btn = document.querySelector("#offers-products-more");
-  if (btn) {
-    const remain = Math.max(0, Number(state.offersPagination.total || 0) - visible);
-    if (state.offersPagination.page < state.offersPagination.totalPages && remain > 0) {
-      btn.textContent = getLang() === "mk" ? `Prikazi povekje (${remain})` : `Me shume produkte (${remain})`;
-      btn.classList.remove("hidden");
-      btn.disabled = false;
-    } else {
-      btn.classList.add("hidden");
-      btn.disabled = true;
-    }
-  }
+  syncAutoProductPagination("offers-products");
   bindAddButtons();
   bindWishButtons();
 }
@@ -3099,6 +3050,78 @@ function bootRevealAnimations() {
   );
 
   targets.forEach((el) => observer.observe(el));
+}
+
+function bootProductReveal() {
+  const main = document.querySelector("main");
+  if (!main || !window.IntersectionObserver || !window.MutationObserver || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add("is-visible");
+      observer.unobserve(entry.target);
+    });
+  }, { threshold: 0.08, rootMargin: "0px 0px -4% 0px" });
+  const observeCards = (root) => {
+    const cards = root.matches?.(".product-card") ? [root] : root.querySelectorAll?.(".product-card") || [];
+    cards.forEach((card) => {
+      card.classList.add("product-reveal");
+      observer.observe(card);
+    });
+  };
+  new MutationObserver((mutations) => {
+    mutations.forEach(({ addedNodes }) => addedNodes.forEach((node) => {
+      if (node.nodeType === Node.ELEMENT_NODE) observeCards(node);
+    }));
+  }).observe(main, { childList: true, subtree: true });
+  observeCards(main);
+}
+
+const autoProductPages = [
+  { id: "home-products", pagination: "homePagination", load: loadHomeProducts, render: renderHomeProducts },
+  { id: "shop-products", pagination: "shopPagination", load: loadShopProducts, render: renderShopProducts },
+  { id: "offers-products", pagination: "offersPagination", load: loadOffersProducts, render: renderOffersProducts }
+];
+let autoProductObserver = null;
+const autoProductLoading = new Set();
+
+function syncAutoProductPagination(id) {
+  if (!autoProductObserver) return;
+  const config = autoProductPages.find((entry) => entry.id === id);
+  const sentinel = document.querySelector(`#${id}-sentinel`);
+  if (!config || !sentinel) return;
+  const pagination = state[config.pagination];
+  if (pagination.page < pagination.totalPages && !autoProductLoading.has(id)) autoProductObserver.observe(sentinel);
+  else autoProductObserver.unobserve(sentinel);
+}
+
+function bootAutoProductPagination() {
+  if (!window.IntersectionObserver) return;
+  autoProductObserver = new IntersectionObserver(async (entries) => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      const config = autoProductPages.find(({ id }) => `${id}-sentinel` === entry.target.id);
+      if (!config || autoProductLoading.has(config.id)) continue;
+      const pagination = state[config.pagination];
+      if (pagination.page >= pagination.totalPages) continue;
+      autoProductLoading.add(config.id);
+      autoProductObserver.unobserve(entry.target);
+      entry.target.classList.add("is-loading");
+      let loaded = false;
+      try {
+        await config.load({ append: true });
+        config.render();
+        loaded = true;
+      } catch (error) {
+        console.error("Nuk u ngarkuan produktet e tjera:", error);
+      } finally {
+        entry.target.classList.remove("is-loading");
+        autoProductLoading.delete(config.id);
+        if (loaded) syncAutoProductPagination(config.id);
+      }
+    }
+  }, { rootMargin: "0px 0px 320px 0px", threshold: 0 });
+  autoProductPages.forEach(({ id }) => syncAutoProductPagination(id));
 }
 
 function bootSlider() {
@@ -4289,6 +4312,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   bootHeaderShrink();
   initMobileHamburgerMenu();
   bootRevealAnimations();
+  bootProductReveal();
   bootSlider();
   ensureInstagramFloatingButton();
   ensureInstagramDirectLinks();
@@ -4296,18 +4320,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   showInitialSkeletons();
   bootContactForm();
   bootShopFilters();
-  document.querySelector("#home-products-more")?.addEventListener("click", async () => {
-    await loadHomeProducts({ append: true });
-    renderHomeProducts();
-  });
-  document.querySelector("#home-categories-more")?.addEventListener("click", () => {
-    state.homeCategoriesVisible += CATEGORY_STEP;
-    renderHomeCategories();
-  });
-  document.querySelector("#categories-more")?.addEventListener("click", () => {
-    state.categoriesPageVisible += CATEGORY_STEP;
-    renderCategoriesPage();
-  });
   document.querySelector("#home-bestsellers-more")?.addEventListener("click", async () => {
     await loadHomeBestSellers({ append: true });
     renderHomeBestSellers();
@@ -4316,20 +4328,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     await loadHomeNewArrivals({ append: true });
     renderHomeNewArrivals();
   });
-  document.querySelector("#shop-products-more")?.addEventListener("click", async () => {
-    await loadShopProducts({ append: true });
-    renderShopProducts();
-  });
-  document.querySelector("#offers-products-more")?.addEventListener("click", async () => {
-    await loadOffersProducts({ append: true });
-    renderOffersProducts();
-  });
   await loadCoreData();
   await bootCheckout();
   await bootOrderTracking();
   await bootOrderSuccessPage();
   await bootAdmin();
   rerenderAll();
+  bootAutoProductPagination();
 });
 
 window.deleteProduct = deleteProduct;

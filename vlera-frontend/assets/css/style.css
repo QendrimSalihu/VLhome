@@ -341,6 +341,17 @@ form[data-search-form]::before{
   border-radius:999px;background:var(--accent);color:#1f2a2c;display:grid;place-items:center;
   font-size:8px !important;font-weight:700;line-height:1;border:1px solid rgba(255,255,255,.45);
 }
+.cart-btn.cart-btn-added{animation:cart-added-bump .58s cubic-bezier(.2,.7,.2,1)}
+.cart-btn.cart-btn-added strong{animation:cart-count-pop .58s ease}
+@keyframes cart-added-bump{
+  0%,100%{transform:scale(1)}
+  32%{transform:scale(1.13) rotate(-5deg)}
+  65%{transform:scale(.97) rotate(2deg)}
+}
+@keyframes cart-count-pop{
+  0%,100%{transform:scale(1)}
+  42%{transform:scale(1.3)}
+}
 .inline-toast{
   position:fixed;
   right:14px;
@@ -1323,6 +1334,20 @@ main > .section + .section .container::before{
   transform:translateY(-2px);
   box-shadow:0 10px 20px rgba(17,24,39,.08);
 }
+.product-card.product-reveal{
+  opacity:0;
+  transform:translateY(14px);
+  transition:opacity .48s ease,transform .48s cubic-bezier(.22,.61,.36,1),box-shadow .18s ease;
+}
+.product-card.product-reveal.is-visible{opacity:1;transform:none}
+.product-card.product-reveal.is-visible:hover{transform:translateY(-2px)}
+.product-load-sentinel{height:1px;grid-column:1/-1}
+.product-load-sentinel.is-loading{height:38px;display:grid;place-items:center}
+.product-load-sentinel.is-loading::after{
+  content:"";width:20px;height:20px;border:2px solid #d6e1dc;
+  border-top-color:#1f7d66;border-radius:50%;animation:product-loading-spin .7s linear infinite;
+}
+@keyframes product-loading-spin{to{transform:rotate(360deg)}}
 .product-media{
   position:relative;
   height:320px;
@@ -3662,8 +3687,12 @@ body.cart-drawer-open{overflow:hidden}
   .cart-drawer-item{grid-template-columns:72px minmax(0,1fr)}
   .cart-drawer-item>img{width:72px;height:84px}
   .cart-drawer-line-total{font-size:12px}
+  .product-actions .small-btn.primary .add-cart-icon{display:none}
+  .product-actions .small-btn{min-width:0;padding:0 3px !important;font-size:10px !important}
 }
 @media (prefers-reduced-motion:reduce){
   .cart-drawer-backdrop,.cart-drawer-panel,.cart-drawer-checkout{transition:none}
+  .cart-btn.cart-btn-added,.cart-btn.cart-btn-added strong,.product-load-sentinel.is-loading::after{animation:none}
+  .product-card.product-reveal{opacity:1;transform:none;transition:none}
 }
 
