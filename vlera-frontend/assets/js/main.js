@@ -1981,6 +1981,8 @@ function populateSelects() {
       const fromUrl = new URLSearchParams(window.location.search).get("category");
       if (fromUrl && state.categories.some((c) => c.name === fromUrl)) {
         shopSelect.value = fromUrl;
+      } else if (state.shopFilters.category && state.categories.some((c) => c.name === state.shopFilters.category)) {
+        shopSelect.value = state.shopFilters.category;
       }
     }
   }
@@ -4324,6 +4326,78 @@ function rerenderAll() {
   applyI18n();
 }
 
+const REFRESH_POSITION_KEY = "vlera_refresh_position_v1";
+
+function readRefreshPosition() {
+  if (isAdminPage()) return null;
+  const navigation = performance.getEntriesByType("navigation")[0];
+  if (navigation?.type !== "reload" && performance.navigation?.type !== 1) return null;
+  try {
+    const saved = JSON.parse(sessionStorage.getItem(REFRESH_POSITION_KEY) || "null");
+    return saved?.url === location.pathname + location.search + location.hash ? saved : null;
+  } catch {
+    return null;
+  }
+}
+
+const refreshPosition = readRefreshPosition();
+if (refreshPosition) history.scrollRestoration = "manual";
+if (!isAdminPage()) window.addEventListener("pagehide", () => {
+  try {
+    sessionStorage.setItem(REFRESH_POSITION_KEY, JSON.stringify({
+      url: location.pathname + location.search + location.hash,
+      y: window.scrollY,
+      homePage: state.homePagination.page,
+      shopPage: state.shopPagination.page,
+      offersPage: state.offersPagination.page,
+      shopFilters: state.shopFilters
+    }));
+  } catch { /* The browser can still use its own scroll restoration. */ }
+});
+
+function applyRefreshShopFilters(saved) {
+  if (!saved?.shopFilters || !document.querySelector("#shop-products")) return;
+  const filters = saved.shopFilters;
+  state.shopFilters = { ...state.shopFilters, ...filters };
+  const values = {
+    "#shop-search": filters.q,
+    "#shop-sort": filters.sort,
+    "#shop-min-price": filters.minPrice,
+    "#shop-max-price": filters.maxPrice
+  };
+  Object.entries(values).forEach(([selector, value]) => {
+    const input = document.querySelector(selector);
+    if (input && value != null) input.value = String(value);
+  });
+  const topSold = document.querySelector("#shop-top-sold");
+  const newOnly = document.querySelector("#shop-new-only");
+  if (topSold) topSold.checked = !!filters.topSoldOnly;
+  if (newOnly) newOnly.checked = !!filters.newOnly;
+  document.querySelector('[data-shop-chip="discount"]')?.classList.toggle("active", !!filters.discountOnly);
+}
+
+async function restoreProductPages(saved) {
+  if (!saved) return;
+  const pages = [
+    ["#home-products", "homePagination", "homePage", loadHomeProducts],
+    ["#shop-products", "shopPagination", "shopPage", loadShopProducts],
+    ["#offers-products", "offersPagination", "offersPage", loadOffersProducts]
+  ];
+  for (const [selector, paginationKey, savedKey, loadPage] of pages) {
+    if (!document.querySelector(selector)) continue;
+    const targetPage = Math.max(1, Number(saved[savedKey] || 1));
+    try {
+      while (state[paginationKey].page < targetPage && state[paginationKey].page < state[paginationKey].totalPages) {
+        const previousPage = state[paginationKey].page;
+        await loadPage({ append: true });
+        if (state[paginationKey].page <= previousPage) break;
+      }
+    } catch (error) {
+      console.error("Nuk u rikthyen të gjitha produktet pas rifreskimit:", error);
+    }
+  }
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   if (isAdminPage()) setAdminUiLocked(true);
   bootSiteAnalytics();
@@ -4344,6 +4418,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   ensureTrustBar();
   showInitialSkeletons();
   bootContactForm();
+  applyRefreshShopFilters(refreshPosition);
   bootShopFilters();
   document.querySelector("#home-bestsellers-more")?.addEventListener("click", async () => {
     await loadHomeBestSellers({ append: true });
@@ -4358,8 +4433,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   await bootOrderTracking();
   await bootOrderSuccessPage();
   await bootAdmin();
+  await restoreProductPages(refreshPosition);
   rerenderAll();
-  if (["#shipping-rates", "#store-location"].includes(window.location.hash)) {
+  if (refreshPosition) {
+    const restoreScroll = () => window.scrollTo(0, Number(refreshPosition.y) || 0);
+    restoreScroll();
+    requestAnimationFrame(() => {
+      restoreScroll();
+      history.scrollRestoration = "auto";
+    });
+  } else if (["#shipping-rates", "#store-location"].includes(window.location.hash)) {
     document.querySelector(window.location.hash)?.scrollIntoView();
   }
   bootAutoProductPagination();
