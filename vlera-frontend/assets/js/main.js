@@ -1260,6 +1260,7 @@ function setCart(items) {
   localStorage.setItem(CART_KEY, payload);
   localStorage.setItem(CART_BACKUP_KEY, payload);
   syncCartCount();
+  if (document.querySelector("#vlera-cart-drawer")?.classList.contains("is-open")) renderCartDrawer();
 }
 
 function syncCartCount() {
@@ -1267,6 +1268,127 @@ function syncCartCount() {
   document.querySelectorAll("[data-cart-count]").forEach((el) => {
     el.textContent = String(total);
   });
+}
+
+let cartDrawerReturnFocus = null;
+
+function bootCartDrawer() {
+  if (isAdminPage() || document.querySelector("#vlera-cart-drawer")) return;
+  document.body.insertAdjacentHTML("beforeend", `
+    <div id="vlera-cart-drawer" class="cart-drawer-root" hidden>
+      <button type="button" class="cart-drawer-backdrop" data-cart-drawer-close aria-label="Mbyll shportën"></button>
+      <aside class="cart-drawer-panel" role="dialog" aria-modal="true" aria-labelledby="cart-drawer-title">
+        <div class="cart-drawer-head">
+          <div><span class="cart-drawer-eyebrow">VLERA LUXURY HOME</span><h2 id="cart-drawer-title">Shporta ime</h2><p id="cart-drawer-count">0 produkte</p></div>
+          <button type="button" class="cart-drawer-close" data-cart-drawer-close aria-label="Mbyll shportën">&times;</button>
+        </div>
+        <div id="cart-drawer-items" class="cart-drawer-items"></div>
+        <div id="cart-drawer-footer" class="cart-drawer-footer"></div>
+      </aside>
+    </div>`);
+  const root = document.querySelector("#vlera-cart-drawer");
+  document.querySelectorAll(".cart-btn[href='cart.html']").forEach((link) => {
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      openCartDrawer(link);
+    });
+  });
+  root.addEventListener("click", (event) => {
+    if (event.target.closest("[data-cart-drawer-close]")) {
+      closeCartDrawer();
+      return;
+    }
+    const action = event.target.closest("button[data-cart-drawer-action]");
+    if (!action) return;
+    const id = Number(action.dataset.id);
+    if (!Number.isFinite(id)) return;
+    if (action.dataset.cartDrawerAction === "minus") changeQty(id, -1);
+    if (action.dataset.cartDrawerAction === "plus") changeQty(id, 1);
+    if (action.dataset.cartDrawerAction === "remove") removeFromCart(id);
+  });
+  root.addEventListener("change", (event) => {
+    const checkbox = event.target.closest("input[data-cart-drawer-select]");
+    if (checkbox) toggleCartSelect(Number(checkbox.dataset.id));
+  });
+  document.addEventListener("keydown", (event) => {
+    if (!root.classList.contains("is-open")) return;
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeCartDrawer();
+    }
+    if (event.key !== "Tab") return;
+    const focusable = [...root.querySelectorAll(".cart-drawer-panel button:not([disabled]), .cart-drawer-panel a[href], .cart-drawer-panel input:not([disabled])")];
+    if (!focusable.length) return;
+    const first = focusable[0], last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+  });
+}
+
+function openCartDrawer(trigger = document.activeElement) {
+  const root = document.querySelector("#vlera-cart-drawer");
+  if (!root) return;
+  if (!root.classList.contains("is-open")) cartDrawerReturnFocus = trigger;
+  renderCartDrawer();
+  root.hidden = false;
+  document.body.classList.add("cart-drawer-open");
+  requestAnimationFrame(() => root.classList.add("is-open"));
+  root.querySelector(".cart-drawer-close")?.focus();
+}
+
+function closeCartDrawer() {
+  const root = document.querySelector("#vlera-cart-drawer");
+  if (!root || root.hidden) return;
+  root.classList.remove("is-open");
+  document.body.classList.remove("cart-drawer-open");
+  const returnFocus = cartDrawerReturnFocus;
+  cartDrawerReturnFocus = null;
+  window.setTimeout(() => {
+    if (root.classList.contains("is-open")) return;
+    root.hidden = true;
+    returnFocus?.focus?.();
+  }, 260);
+}
+
+function renderCartDrawer() {
+  const root = document.querySelector("#vlera-cart-drawer");
+  if (!root) return;
+  const cart = getCart();
+  const selected = cart.filter((item) => item.selected !== false);
+  const subtotal = selected.reduce((sum, item) => sum + Number(item.price || 0) * Number(item.qty || 1), 0);
+  root.querySelector("#cart-drawer-count").textContent = `${cart.length} ${cart.length === 1 ? "produkt" : "produkte"}`;
+  root.querySelector("#cart-drawer-items").innerHTML = cart.length
+    ? cart.map((item) => {
+        const id = Number(item.id) || 0;
+        const title = escapeHtml(item.title || "Produkt");
+        const image = escapeHtml(toImageUrl(item.image) || PLACEHOLDER_PRODUCT);
+        const qty = Math.max(1, Number(item.qty || 1));
+        const stock = Number(item.stock_qty);
+        const maxed = Number.isFinite(stock) && stock >= 0 && qty >= stock;
+        return `<article class="cart-drawer-item">
+          <img src="${image}" alt="${title}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${PLACEHOLDER_PRODUCT}'">
+          <div class="cart-drawer-item-main">
+            <div class="cart-drawer-item-title"><h3>${title}</h3><button type="button" class="cart-drawer-remove" data-cart-drawer-action="remove" data-id="${id}" aria-label="Hiq ${title} nga shporta">&times;</button></div>
+            <strong class="cart-drawer-price">${money(item.price)}</strong>
+            <div class="cart-drawer-item-bottom">
+              <div class="cart-drawer-qty" aria-label="Sasia për ${title}">
+                <button type="button" data-cart-drawer-action="minus" data-id="${id}" aria-label="Ule sasinë e ${title}" ${qty <= 1 ? "disabled" : ""}>&minus;</button>
+                <span>${qty}</span>
+                <button type="button" data-cart-drawer-action="plus" data-id="${id}" aria-label="Rrite sasinë e ${title}" ${maxed ? "disabled" : ""}>+</button>
+              </div>
+              <span class="cart-drawer-line-total">${money(Number(item.price || 0) * qty)}</span>
+            </div>
+            <label class="cart-drawer-select"><input type="checkbox" data-cart-drawer-select data-id="${id}" ${item.selected !== false ? "checked" : ""}> Përfshi në porosi</label>
+          </div>
+        </article>`;
+      }).join("")
+    : `<div class="cart-drawer-empty"><span aria-hidden="true">🛒</span><h3>Shporta është bosh</h3><p>Zgjidh produktet që të pëlqejnë dhe ato do të shfaqen këtu.</p><a class="cart-drawer-shop-link" href="shop.html">Shiko produktet</a></div>`;
+  root.querySelector("#cart-drawer-footer").innerHTML = cart.length
+    ? `<div class="cart-drawer-subtotal"><span>Nëntotali</span><strong>${money(subtotal)}</strong></div>
+       <p>Dërgesa llogaritet gjatë plotësimit të porosisë.</p>
+       <a class="cart-drawer-checkout ${selected.length ? "" : "is-disabled"}" href="checkout.html" ${selected.length ? "" : 'aria-disabled="true" tabindex="-1"'}>Vazhdo me porosinë</a>
+       <button type="button" class="cart-drawer-continue" data-cart-drawer-close>Vazhdo blerjen</button>`
+    : `<button type="button" class="cart-drawer-continue" data-cart-drawer-close>Vazhdo blerjen</button>`;
 }
 
 function addToCart(product) {
@@ -1288,7 +1410,8 @@ function addToCart(product) {
   }
   else cart.push({ ...product, qty: 1, selected: true });
   setCart(cart);
-  showInlineToast(t("added_to_cart"), "success");
+  if (document.querySelector("#vlera-cart-drawer")) openCartDrawer();
+  else showInlineToast(t("added_to_cart"), "success");
 }
 
 function removeFromCart(id) {
@@ -4156,6 +4279,7 @@ function rerenderAll() {
 document.addEventListener("DOMContentLoaded", async () => {
   if (isAdminPage()) setAdminUiLocked(true);
   bootSiteAnalytics();
+  bootCartDrawer();
   relocateHeaderSearchForms();
   window.addEventListener("resize", relocateHeaderSearchForms);
   setLang(getLang());
