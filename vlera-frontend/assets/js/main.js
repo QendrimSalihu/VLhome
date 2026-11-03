@@ -3095,13 +3095,20 @@ const autoProductPages = [
 let autoProductObserver = null;
 const autoProductLoading = new Set();
 
+function homeInfoAnchorIsVisible() {
+  if (!["#shipping-rates", "#store-location"].includes(window.location.hash)) return false;
+  const target = document.querySelector(window.location.hash);
+  return !!target && target.getBoundingClientRect().top < window.innerHeight;
+}
+
 function syncAutoProductPagination(id) {
   if (!autoProductObserver) return;
   const config = autoProductPages.find((entry) => entry.id === id);
   const sentinel = document.querySelector(`#${id}-sentinel`);
   if (!config || !sentinel) return;
   const pagination = state[config.pagination];
-  if (pagination.page < pagination.totalPages && !autoProductLoading.has(id)) autoProductObserver.observe(sentinel);
+  if (id === "home-products" && homeInfoAnchorIsVisible()) autoProductObserver.unobserve(sentinel);
+  else if (pagination.page < pagination.totalPages && !autoProductLoading.has(id)) autoProductObserver.observe(sentinel);
   else autoProductObserver.unobserve(sentinel);
 }
 
@@ -3112,6 +3119,10 @@ function bootAutoProductPagination() {
       if (!entry.isIntersecting) continue;
       const config = autoProductPages.find(({ id }) => `${id}-sentinel` === entry.target.id);
       if (!config || autoProductLoading.has(config.id)) continue;
+      if (config.id === "home-products" && homeInfoAnchorIsVisible()) {
+        autoProductObserver.unobserve(entry.target);
+        continue;
+      }
       const pagination = state[config.pagination];
       if (pagination.page >= pagination.totalPages) continue;
       autoProductLoading.add(config.id);
@@ -3132,6 +3143,10 @@ function bootAutoProductPagination() {
     }
   }, { rootMargin: "0px 0px 320px 0px", threshold: 0 });
   autoProductPages.forEach(({ id }) => syncAutoProductPagination(id));
+  if (document.querySelector("#home-products-sentinel")) {
+    window.addEventListener("scroll", () => syncAutoProductPagination("home-products"), { passive: true });
+    window.addEventListener("hashchange", () => requestAnimationFrame(() => syncAutoProductPagination("home-products")));
+  }
 }
 
 function bootSlider() {
@@ -4344,10 +4359,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   await bootOrderSuccessPage();
   await bootAdmin();
   rerenderAll();
-  bootAutoProductPagination();
   if (["#shipping-rates", "#store-location"].includes(window.location.hash)) {
-    requestAnimationFrame(() => document.querySelector(window.location.hash)?.scrollIntoView());
+    document.querySelector(window.location.hash)?.scrollIntoView();
   }
+  bootAutoProductPagination();
 });
 
 window.deleteProduct = deleteProduct;
