@@ -2571,7 +2571,11 @@ async function loadAdminAnalytics() {
     }
     const pageNames = {
       "index.html": "Kryefaqja", "shop.html": "Dyqani", "categories.html": "Kategoritë",
-      "contact.html": "Kontakt", "about.html": "Rreth nesh", "offers.html": "Ofertat"
+      "contact.html": "Kontakt", "about.html": "Rreth nesh", "offers.html": "Ofertat",
+      "cart.html": "Shporta", "checkout.html": "Plotësimi i porosisë",
+      "product.html": "Produkti", "wishlist.html": "Lista e dëshirave",
+      "search.html": "Kërkimi", "track-order.html": "Statusi i porosisë",
+      "order-success.html": "Konfirmimi i porosisë", "404.html": "Faqja nuk u gjet"
     };
     const pages = Array.isArray(data?.pages) ? data.pages : [];
     document.querySelector("#analytics-pages-body").innerHTML = pages.length
