@@ -2986,6 +2986,7 @@ function initMobileHamburgerMenu() {
   };
 
   const renderDrawerLinks = () => {
+    const mk = getLang() === "mk";
     const links = Array.from(nav.querySelectorAll("a"))
       .map((a) => {
         const href = a.getAttribute("href") || "#";
@@ -2996,9 +2997,19 @@ function initMobileHamburgerMenu() {
       .join("");
     drawer.innerHTML = `
       <div class="mobile-nav-head">
+        <div class="mobile-nav-brand"><strong>VLERA</strong><span>Luxury Home</span></div>
         <button type="button" class="mobile-nav-close" aria-label="Mbyll menune">&times;</button>
       </div>
       ${links}
+      <div class="mobile-nav-section-label">${mk ? "Informacii" : "Informacione"}</div>
+      <a class="mobile-nav-link mobile-nav-link-feature" href="index.html#shipping-rates">
+        <span class="mobile-nav-feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h11v11H3zM14 10h4l3 3v4h-7z"/><circle cx="7.5" cy="18" r="1.5"/><circle cx="17.5" cy="18" r="1.5"/></svg></span>
+        <span>${mk ? "Ceni za dostava" : "Tarifat e dërgesës"}</span><span class="mobile-nav-link-arrow" aria-hidden="true">&rsaquo;</span>
+      </a>
+      <a class="mobile-nav-link mobile-nav-link-feature" href="index.html#store-location">
+        <span class="mobile-nav-feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
+        <span>${mk ? "Navigacija do prodavnicata" : "Navigimi te dyqani"}</span><span class="mobile-nav-link-arrow" aria-hidden="true">&rsaquo;</span>
+      </a>
     `;
     drawer.querySelector(".mobile-nav-close")?.addEventListener("click", closeMenu);
     drawer.querySelectorAll("a").forEach((a) => a.addEventListener("click", closeMenu));
@@ -3027,8 +3038,7 @@ function initMobileHamburgerMenu() {
   });
 
   headerInner.insertBefore(toggle, headerInner.firstChild);
-  header.appendChild(overlay);
-  header.appendChild(drawer);
+  document.body.append(overlay, drawer);
 }
 
 function bootRevealAnimations() {
@@ -4335,6 +4345,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   await bootAdmin();
   rerenderAll();
   bootAutoProductPagination();
+  if (["#shipping-rates", "#store-location"].includes(window.location.hash)) {
+    requestAnimationFrame(() => document.querySelector(window.location.hash)?.scrollIntoView());
+  }
 });
 
 window.deleteProduct = deleteProduct;

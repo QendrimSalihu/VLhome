@@ -133,7 +133,48 @@ img:hover{cursor:pointer}
 .mobile-nav-head{
   position:absolute;
   top:16px;
+  left:24px;
   right:12px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.mobile-nav-brand{display:flex;flex-direction:column;gap:2px;line-height:1}
+.mobile-nav-brand strong{
+  font-family:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+  font-size:25px;font-weight:600;letter-spacing:.16em;color:#fff;
+}
+.mobile-nav-brand span{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:#c6a86b}
+.mobile-nav-section-label{
+  margin:16px 12px 6px;
+  color:#c6a86b;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+.mobile-nav-link.mobile-nav-link-feature{
+  min-height:54px;
+  gap:12px;
+  padding:0 12px;
+  background:rgba(198,168,107,.09);
+  border-color:rgba(198,168,107,.2);
+  letter-spacing:.015em;
+  text-transform:none;
+  font-size:14px;
+}
+.mobile-nav-link-feature:hover{background:rgba(198,168,107,.17)}
+.mobile-nav-feature-icon{
+  width:32px;height:32px;flex:0 0 32px;
+  display:grid;place-items:center;
+  border-radius:9px;
+  color:#dec796;
+  background:rgba(198,168,107,.13);
+}
+.mobile-nav-feature-icon svg{width:19px;height:19px}
+.mobile-nav-link-arrow{margin-left:auto;color:#dec796;font-size:24px;font-weight:400}
+.mobile-nav-link:focus-visible,.mobile-nav-close:focus-visible,.mobile-menu-toggle:focus-visible{
+  outline:2px solid #dec796;outline-offset:2px;
 }
 .mobile-nav-close{
   width:38px;
@@ -2628,6 +2669,7 @@ main .load-more-btn:hover{
   }
   .mobile-nav-head{
     top:12px;
+    left:24px;
     right:12px;
   }
   .mobile-nav-link{
@@ -3004,6 +3046,7 @@ main .load-more-btn:hover{
     font-size:13px;
   }
 }
+#shipping-rates,#store-location{scroll-margin-top:82px}
 
 @media (max-width:560px){
   .admin-side a{
